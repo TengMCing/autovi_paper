@@ -1,1 +1,0 @@
-# autovi_paper
