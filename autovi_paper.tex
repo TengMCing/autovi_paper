@@ -202,9 +202,9 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \hypersetup{
   pdftitle={Software for Automated Residual Plot Assessment: autovi and autovi.web},
   pdfauthor={Weihao Li; Dianne Cook; Emi Tanaka; Susan VanderPlas; Klaus Ackermann},
-  pdfkeywords={statistical software, statistical graphics, data
+  pdfkeywords={initial data analysis, statistical graphics, data
 visualization, visual inference, computer vision, machine
-learning, hypothesis testing, reression analysis},
+learning, hypothesis testing, regression analysis},
   colorlinks=true,
   linkcolor={blue},
   filecolor={Maroon},
@@ -278,27 +278,28 @@ Hall, 3310 Holdrege St Suite 340, Lincoln, NE 68583, United States\\
 \begin{document}
 
 \begin{abstract}
-Regression software is widely available today, but tools for effective
-diagnostics are still lagging. Perhaps, one of the reasons is that it is
-hard. Conventional tests, that would make the task easy, are often too
-sensitive, which would result in adequate models being abandoned if the
-analyst strictly adhered to the test decision. The recommended advice is
-to have the analyst assess the strength of patterns in residual plots.
-This requires human effort and also suffers from the potential for
-inconsistent decisions from different analysts. Using a lineup protocol
-can help to alleviate inconsistency, but requires even more human
-effort. This is the type of task where a robot might be employed to do
-the disagreeable work that currently requires a human. Here we describe
-a new R package that includes a computer vision model for automated
-assessment of residual plots, and an accompanying Shiny app for ease of
-use. For a user-provided sample of residuals, it predicts a measure of
-visual signal strength (VSS) and provides a suite of supporting
-information to assist the analyst diagnose their model fit.
+Regression software is widely available, and there are many tools for
+generating diagnostics and computing conventional residual tests.
+However, the advice remains that the analyst should look at the residual
+plot to check the fit. Perhaps, one of the reasons is that conventional
+tests are too sensitive, strictly resulting in adequate models being
+abandoned. Visually assess the strength of patterns in residual plots
+requires human effort and suffers from the potential for inconsistent
+decisions from different analysts. Using a lineup protocol, where the
+residual plot is embedded among null plots, can help to alleviate
+inconsistency, but requires even more human effort. This is the type of
+task that in today's world might employ a robot to do the tedious work
+for a human. Here we describe a new R package that includes a computer
+vision model for automated assessment of residual plots, and an
+accompanying Shiny app for ease of use. For a user-provided sample of
+residuals, it predicts a measure of visual signal strength (VSS) and
+provides a suite of supporting information to assist the analyst decide
+on the appropriateness their model fit.
 \end{abstract}
 
-\keywords{statistical software; statistical graphics; data
+\keywords{initial data analysis; statistical graphics; data
 visualization; visual inference; computer vision; machine
-learning; hypothesis testing; reression analysis}
+learning; hypothesis testing; regression analysis}
           
 \ack{The author acknowledges that this template is based on the latex
 template for Australian and New Zealand Journal of Statistics and
@@ -314,73 +315,39 @@ Statistical Publishing Association Inc.}
 
 \section{Introduction}\label{sec-autovi-introduction}
 
-Regression analysis is a fundamental statistical technique widely used
-for modeling data from many fields. To diagnose the fit of a model it is
-recommended that the residuals are plotted. If the fit is good, any
-variation remaining should be noise, consistent with sampling from a
-distribution specified by the error model. Deviations that might be
-observed from a residual plot are non-normality, heteroscedasticity, and
-other associations with the fitted values. In \citet{li2024plot}, we
-demonstrated that visual methods for assessing residuals are
-advantageous over conventional tests due to their reduced sensitivity to
-minor departures. Building on this, \citet{li2024automated} introduced a
-computer vision model aimed at alleviating the human effort required for
-visual assessment of residual plots. The next step is to deliver the use
-of the computer vision model to potential users, so that it can be
-widely used to the benefit of the analytics community.
-
-Software for regression analysis tools is widely available. The
-Comprehensive R Archive Network (CRAN) \citep{hornik2012comprehensive}
-hosts a vast array of packages, many of which provide tools to diagnose
-models using residual plots. These packages can be broadly categorized
-into three groups: general-purpose, enhanced visual diagnostics, and
-visual diagnostics with statistical testing.
-
-General-purpose regression analysis tools are the most widely used group
-of packages. While not specifically designed for graphical diagnostics
-of residuals in linear regression, they include this functionality as
-part of a broader suite of statistical tools. For example, the
-\texttt{stats} package \citep{stats} offers standard diagnostic plots
-such as residuals vs.~fitted values, quantile-quantile (Q-Q) plots, and
-residuals vs.~leverage plots. Additional packages like \texttt{jtools}
+Regression analysis is a widely used statistical modeling technique
+widely for data in many fields. There are a vast array of software for
+conducting regression modeling and generating diagnostics. The package
+\texttt{lmtest} \citep{lmtest} provides a suite of conventional tests.
+The \texttt{stats} package \citep{stats} offers standard diagnostic
+plots such as residuals vs.~fitted values, quantile-quantile (Q-Q)
+plots, and residuals vs.~leverage plots. Packages like \texttt{jtools}
 \citep{jtools}, \texttt{olsrr} \citep{olsrr}, \texttt{rockchalk}
 \citep{rockchalk}, and \texttt{ggResidpanel} \citep{ggresidpanel}
 provide similar graphical diagnostics, often with alternative aesthetics
 or interactive features. All of these tools deliver the types of
 diagnostic plots outlined in the classical text by
-\citet{cook1982residuals}. However, as discussed in \citet{li2024plot},
-relying solely on subjective assessments of these plots can lead to
-issues, such as over-interpreting random patterns as model violations.
+\citet{cook1982residuals}. The \texttt{ecostats} package
+\citep{warton_global_2023} incorporates simulation envelopes into
+residual plots, while \texttt{DHARMa} \citep{dharma} compares empirical
+quantiles (0.25, 0.5, and 0.75) of scaled residuals to their theoretical
+counterparts. \texttt{DHARMa} is particularly focused on detecting model
+violations such as heteroscedasticity, incorrect functional forms, and
+issues specific to generalized linear and mixed-effect models, like
+over/under-dispersion. It also includes conventional test annotations to
+help avoid misinterpretation.
 
-The second group consists of enhanced visual diagnostics tools, which
-provide advanced aids for interpreting diagnostic plots. For instance,
-\texttt{ecostats} \citep{warton_global_2023} incorporates simulation
-envelopes into residual plots, while \texttt{DHARMa} \citep{dharma}
-compares empirical quantiles (0.25, 0.5, and 0.75) of scaled residuals
-to their theoretical counterparts. \texttt{DHARMa} is particularly
-focused on detecting model violations such as heteroscedasticity,
-incorrect functional forms, and issues specific to generalized linear
-and mixed-effect models, like over/under-dispersion. It also includes
-annotations from conventional tests, displayed as labels or text within
-the plot, to help avoid misinterpretation.
-
-The third group, visual diagnostics with statistical testing, offers
-tools for formally testing patterns observed in diagnostic plots
-\citep{buja2009statistical}. A common method for visual testing of
-residual plots is the lineup protocol, where the true residual plot is
-embedded within a set of null plots generated by simulating residuals
-under the null hypothesis \(H_0\) that the regression model is correctly
-specified. Observers are asked to identify the plot that appears most
-different from the others. If a significant proportion of observers
-correctly identify the true residual plot, it provides evidence against
-\(H_0\), as the true residual plot should be indistinguishable from the
-null plots if all residuals are generated by the same process, according
-to \citet{buja2009statistical}. Packages in this group, such as
-\texttt{nullabor} \citep{nullabor}, \texttt{HLMdiag}
+However relying solely on subjective assessments of these plots can lead
+to issues, such as over-interpreting random patterns as model
+violations. \citet{li2024plot} demonstrated that visual methods using
+the lineup protocol \citep{buja2009statistical} for assessing residuals
+are more useful, and also perform more practically than conventional
+tests due to their reduced sensitivity to minor departures. Packages
+such as \texttt{nullabor} \citep{nullabor}, \texttt{HLMdiag}
 \citep{loy2014hlmdiag}, and \texttt{regressinator}
 \citep{regressinator}, enable users to compare observed residual plots
 with samples from null distributions, helping to quantify the
-significance of any detected patterns.
+significance of any detected patterns. However, the
 
 However, as discussed in \citet{li2024automated}, the lineup protocol
 has significant limitations in large-scale applications due dependence
@@ -414,10 +381,62 @@ and \(p\)-values for testing whether a regression model is correctly
 specified. The package introduces a novel approach to automating
 statistical analysis, particularly in the interpretation of residual
 plots. The name \texttt{autovi} stands for automated visual inference.
-While initially designed for linear regression residual diagnostics, it
-has the potential to be extended to broader visual inference
-applications, as we discuss in section
-Section~\ref{sec-autovi-infrastructure}.
+
+There are two ways to access the package, directly using R or through a
+web interface, \texttt{autovi.web}. The web interface has the advantage
+that it can be used without installing Python, R and the relevant
+packages locally.
+
+\subsection{Why use it}\label{sec-why}
+
+\textbf{?@fig-three-examples} shows three sets of plots of residuals
+against fitted values. The simulated example in (a) might be interpreted
+as a heteroscedastic pattern, however the automated reading would
+predict this to have a visual signal strength (VSS) of 1.53, with a
+corresponding \(p\)-value of 0.25. This means it is would be interpreted
+as a good residual plot, that there is nothing in the data to indicate a
+violation of model assumptions. Skewness in the predictor variables is
+generating the apparent heteroscedasticity, where the smaller variance
+in residuals at larger fitted values is due to smaller sample size only.
+The Breusch-Pagan test \citep{breusch1979simple} for heteroscedasticity
+would also not reject this as good residual plot.
+
+The data in (b) is generated by fitting a linear model predicting
+\texttt{mpg} based on \texttt{hp} using the \texttt{datasets::mtcars}.
+It is a small data set, and there is a hint of nonlinear structure not
+captured by the model. The automated plot reading would predict a VSS of
+3.57, which has a \(p\)-value less than 0.05. That is, the nonlinear
+structure is most likely real, and indicates a problem with the model.
+The conventional test, a Ramsey Regression Equation Specification Error
+Test (RESET) \citep{ramsey1969tests} would also strongly detect the
+nonlinearity.
+
+The third example is generated using the \texttt{surreal} package
+\citep{surreal} where structured residuals are hidden in data, to be
+revealed if the correct model is specified. Here a quote based on Tukey
+is used as the residual structure ``visual summaries focus on unexpected
+values''. The automated plot reading predicts the VSS to be 5.87, with a
+\(p\)-value less than 0.05. This structure is blindingly obvious
+visually, but a RESET test for nonlinear structure would not report a
+problem. (It would be detected by a Breusch-Pagan for heteroscedasticity
+and also Shapiro-Wilk test \citep{shapiro1965analysis} for
+non-normality.)
+
+\begin{figure}[H]
+
+{\centering \includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/three-examples-1.pdf}
+
+}
+
+\caption{Reading residual plots can be a difficult task, particular for
+students new to statistical modeling. The autovi package makes it
+easier. Here are three examples of residual plots, which may appear to
+have structure. According to autovi, the visual signal strengths (VSS)
+of these three examples are approximately (a) 1.53, (b) 3.57, (c) 5.87,
+resulting in (b), (c) being significant violations of good residuals,
+but (a) is consistent with a good residual plot.}
+
+\end{figure}%
 
 \subsection{Implementation}\label{sec-autovi-implementation}
 
@@ -675,7 +694,7 @@ Section~\ref{sec-autovi-usage} is a thin wrapper around
 initialization. \texttt{get\_keras\_model()} is a function to download a
 trained computer vision model (described in \citet{li2024automated})
 from GitHub. ``vss\_phn\_32'' specifies a model that predicts VSS and is
-trained on residuals with polynomial, heteroskedasticity, and
+trained on residuals with polynomial, heteroscedasticity, and
 non-normality patterns (phn). More details about the hosted models will
 be provided in Section~\ref{sec-trained-model-hosting}.
 
@@ -1022,7 +1041,7 @@ a temporary file.
 \end{Shaded}
 
 \begin{verbatim}
-[1] "/var/folders/61/bv7_1qzs20x6fjb2rsv7513r0000gn/T//RtmpfYtMdO/file37817b7b5b6.png"
+[1] "/var/folders/61/bv7_1qzs20x6fjb2rsv7513r0000gn/T//Rtmp6Lce76/file135f86b4a7b69.png"
 \end{verbatim}
 
 \subsubsection{Image Reading and
@@ -1992,13 +2011,21 @@ techniques to other types of diagnostic plots and statistical models,
 potentially revolutionizing how we approach statistical inference using
 visual displays more broadly.
 
-\section{Availability}\label{availability}
-
-The web interface is housed at \url{autoviweb.netlify.app}.
+\section{Resources and Supplementary
+Material}\label{resources-and-supplementary-material}
 
 The the current version of \texttt{autovi} can be installed from CRAN,
 and source code for both packages are available at
-\url{https://github.com/TengMCing/}.
+\url{https://github.com/TengMCing/autovi}. The web interface is
+available from \url{autoviweb.netlify.app}.
+
+These \texttt{R} packages were used for the work: \texttt{tidyverse}
+\citep{tidyverse}, \texttt{lmtest} \citep{lmtest}, \texttt{kableExtra}
+\citep{kableextra}, \texttt{patchwork} \citep{patchwork},
+\texttt{rcartocolor} \citep{rcartocolor}, \texttt{glue} \citep{glue},
+\texttt{here} \citep{here}, \texttt{magick} \citep{magick},
+\texttt{yardstick} \citep{yardstick} and \texttt{reticulate}
+\citep{reticulate}.
 
 
   \bibliography{bibliography.bib}
