@@ -119,15 +119,17 @@ doublespace,
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
@@ -190,9 +192,6 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
 \usepackage[]{natbib}
 \bibliographystyle{anzsj}
 \usepackage{bookmark}
@@ -200,7 +199,7 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
-  pdftitle={Software for Automated Residual Plot Assessment: autovi and autovi.web},
+  pdftitle={Automated Residual Plot Assessment with the R Package autovi and Shiny App autovi.web},
   pdfauthor={Weihao Li; Dianne Cook; Emi Tanaka; Susan VanderPlas; Klaus Ackermann},
   pdfkeywords={initial data analysis, statistical graphics, data
 visualization, visual inference, computer vision, machine
@@ -234,13 +233,13 @@ learning, hypothesis testing, regression analysis},
 \def\filB#1#2 {\ifx\end#1\egroup \else#1 \expandafter\filB\fi}
 
 \runningheads{
-Software for Automated Residual Plot Assessment
+Automated Residual Plot Assessment
 }{
 \firstletters{WEIHAO}LI, \firstletters{DIANNE}COOK, \firstletters{EMI}TANAKA, \firstletters{SUSAN}VANDERPLAS, AND  \firstletters{KLAUS}ACKERMANN
 }
 
-\title{Software for Automated Residual Plot Assessment: autovi and
-autovi.web}
+\title{Automated Residual Plot Assessment with the R Package autovi and
+Shiny App autovi.web}
 \usepackage{etoolbox}
 \makeatletter
 \providecommand{\subtitle}[1]{% add subtitle to \maketitle
@@ -377,10 +376,11 @@ conclusions of this work.
 \section{R package: autovi}\label{sec-autovi}
 
 The main purpose of \texttt{autovi} is to provide rejection decisions
-and \(p\)-values for testing whether a regression model is correctly
-specified. The package introduces a novel approach to automating
-statistical analysis, particularly in the interpretation of residual
-plots. The name \texttt{autovi} stands for automated visual inference.
+and \(p\)-values for testing the null hypothesis (\(H_0\)) that the
+regression model is correctly specified. The package provides automated
+interpretation of residual plots using computer vision. The name
+\texttt{autovi} stands for \textbf{auto}mated \textbf{v}isual
+\textbf{i}nference.
 
 There are two ways to access the package, directly using R or through a
 web interface, \texttt{autovi.web}. The web interface has the advantage
@@ -389,7 +389,7 @@ packages locally.
 
 \subsection{Why use it}\label{sec-why}
 
-\textbf{?@fig-three-examples} shows three sets of plots of residuals
+Figure~\ref{fig-three-examples} shows three sets of plots of residuals
 against fitted values. The simulated example in (a) might be interpreted
 as a heteroscedastic pattern, however the automated reading would
 predict this to have a visual signal strength (VSS) of 1.53, with a
@@ -422,19 +422,22 @@ problem. (It would be detected by a Breusch-Pagan for heteroscedasticity
 and also Shapiro-Wilk test \citep{shapiro1965analysis} for
 non-normality.)
 
-\begin{figure}[H]
+\begin{figure}
 
-{\centering \includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/three-examples-1.pdf}
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-three-examples-1.pdf}
 
 }
 
-\caption{Reading residual plots can be a difficult task, particular for
-students new to statistical modeling. The autovi package makes it
-easier. Here are three examples of residual plots, which may appear to
-have structure. According to autovi, the visual signal strengths (VSS)
-of these three examples are approximately (a) 1.53, (b) 3.57, (c) 5.87,
-resulting in (b), (c) being significant violations of good residuals,
-but (a) is consistent with a good residual plot.}
+\caption{\label{fig-three-examples}Reading residual plots can be a
+difficult task, particular for students new to statistical modeling. The
+autovi package makes it easier. Here are three examples of residual
+plots, which may appear to have structure. According to autovi, the
+visual signal strengths (VSS) of these three examples are approximately
+(a) 1.53, (b) 3.57, (c) 5.87, resulting in (b), (c) being significant
+violations of good residuals, but (a) is consistent with a good residual
+plot.}
 
 \end{figure}%
 
@@ -474,9 +477,9 @@ the two languages and supporting the integrated infrastructure.
 \subsection{Installation}\label{installation}
 
 The \texttt{autovi} package is available on CRAN. It is actively
-developed and maintained, with the latest updates accessible on GitHub
-at \url{https://github.com/TengMCing/autovi}. The code discussed in this
-paper is based on \texttt{autovi} version 0.4.1.
+developed and maintained, with the latest updates accessible on GitHub.
+The code discussed in this paper is based on \texttt{autovi} version
+0.4.1.
 
 The package includes internal functions to check the current Python
 environment used by the \texttt{reticulate} package. If the necessary
@@ -485,10 +488,30 @@ will be raised. If you want to select a specific Python environment, you
 can do so by calling the \texttt{reticulate::use\_python()} function
 before using the \texttt{autovi} package.
 
-\subsection{Usage}\label{sec-autovi-usage}
+We recommend using the Shiny app \texttt{autovi.web} if encountering
+installation problems.
 
-To get started quickly, only three function calls are needed to obtain a
-summary of the automated residual assessment:
+\subsection{Numerical Summary}\label{sec-autovi-usage}
+
+Three steps are needed to get an automated assessment of a set of
+residuals and fitted values:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Load the \texttt{autovi} package using the \texttt{library()}
+  function.
+\item
+  Create a checker object with a linear regression model.
+\item
+  Call the \texttt{check()} method of the checker, which, by default,
+  predicts the VSS for the true residual plot, 100 null plots, and 100
+  bootstrapped plots, storing the predictions internally. A concise
+  report of the check results is then printed.
+\end{enumerate}
+
+The code to do this is:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -497,6 +520,8 @@ summary of the automated residual assessment:
 \NormalTok{checker}\SpecialCharTok{$}\FunctionTok{check}\NormalTok{() }
 \end{Highlighting}
 \end{Shaded}
+
+It produces the following summary:
 
 \begin{verbatim}
 \end{verbatim}
@@ -526,38 +551,22 @@ Status:
     - Likelihood ratio: 0.7275 (boot) / 0.06298 (null) = 11.55 
 \end{verbatim}
 
-The three functions are explained as follows:
+The summary includes observed VSS of the true residual plot and
+associated \(p\)-value of the automated visual test. The \(p\)-value is
+the proportion of null plots (out of the total 100) that have VSS
+greater than or equal to that of the true residual plot. The report also
+provides sample quantiles of VSS for null samples and bootstrapped data
+plots, providing more information about the sampling variability and a
+likelihood of model violations. The likelihood is computed from the
+proportion of values greater than the observed VSS in both the
+bootstrapped data values and the simulated null values.
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Load the \texttt{autovi} package using the \texttt{library()}
-  function.
-\item
-  Create a checker object with a linear regression model.
-\item
-  Call the \texttt{check()} method of the checker, which, by default,
-  predicts the VSS for the true residual plot, 100 null plots, and 100
-  bootstrapped plots, storing the predictions internally. A concise
-  report of the check results is then printed.
-\end{enumerate}
+\subsection{Visual Summary}\label{sec-autovi-visual}
 
-The summary reports key findings such as the VSS of the true residual
-plot and the \(p\)-value of the automated visual test. The \(p\)-value
-is the ratio of null plots that have VSS greater than or equal to that
-of the true residual plot. We typically reject the null hypothesis when
-the \(p\)-value is smaller than or equal to a desired significance
-level, such as 5\%. The report also provides sample quantiles of VSS for
-null and bootstrapped plots, helping to explain the severity and
-likelihood of model violations.
-
-Although the \(p\)-value is sufficient for automated decision-making,
-users can visually inspect the original residual plot alongside a sample
-null plot. This visual comparison can clarify why \(H_0\) is either
-rejected or not, and help identify potential remedies. The
-\texttt{plot\_pair()} and \texttt{plot\_lineup()} methods facilitate
-this comparison.
+Users can visually inspect the original residual plot alongside a sample
+null plot using \texttt{plot\_pair()} or a lineup of null plot
+\texttt{plot\_lineup()}. This visual comparison can clarify why \(H_0\)
+is either rejected or not, and help identify potential remedies.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -569,7 +578,7 @@ this comparison.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
+\includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
 
 }
 
@@ -599,7 +608,7 @@ result through the \texttt{summary\_plot()} function.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
 
 }
 
@@ -637,7 +646,7 @@ the automated analysis.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
 
 }
 
@@ -677,796 +686,8 @@ them directly through function arguments. Similarly, the image reading
 and resizing module is fixed but will adapt to different Keras models by
 checking their input shapes. The remaining seven modules are designed to
 be overridable, enabling users to tailor the infrastructure to their
-specific needs. These modules are discussed in detail in the following
-sections.
-
-\subsubsection{Initialization}\label{initialization}
-
-An \texttt{autovi} checker can be initialized by supplying two primary
-inputs, including a regression model object, such as an \texttt{lm}
-object representing the result of a linear regression model, and a
-trained computer vision model compatible with the \texttt{Keras}
-\citep{chollet2015keras} Application Programming Interface (API), to the
-\texttt{AUTO\_VI} class constructor \texttt{auto\_vi()}. The
-\texttt{residual\_checker()} introduced in
-Section~\ref{sec-autovi-usage} is a thin wrapper around
-\texttt{auto\_vi()}, which will call \texttt{get\_keras\_model()} during
-initialization. \texttt{get\_keras\_model()} is a function to download a
-trained computer vision model (described in \citet{li2024automated})
-from GitHub. ``vss\_phn\_32'' specifies a model that predicts VSS and is
-trained on residuals with polynomial, heteroscedasticity, and
-non-normality patterns (phn). More details about the hosted models will
-be provided in Section~\ref{sec-trained-model-hosting}.
-
-The input of the constructor will be stored as attributes of the checker
-and can be accessed by the user through the \texttt{\$} operator.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(autovi)}
-\NormalTok{checker }\OtherTok{\textless{}{-}} \FunctionTok{auto\_vi}\NormalTok{(}\AttributeTok{fitted\_model =} \FunctionTok{lm}\NormalTok{(dist }\SpecialCharTok{\textasciitilde{}}\NormalTok{ speed, }\AttributeTok{data =}\NormalTok{ cars), }
-                   \AttributeTok{keras\_model =} \FunctionTok{get\_keras\_model}\NormalTok{(}\StringTok{"vss\_phn\_32"}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-Optionally, the user may specify the node index of the output layer of
-the trained computer vision model to be monitored by the checker via the
-\texttt{node\_index} argument if there are multiple output nodes. This
-is particularly useful for multiclass classifiers when the user wants to
-use one of the nodes as a VSS indicator.
-
-After initializing the object, you can print the checker to view its
-status.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{── }\SpecialCharTok{\textless{}}\NormalTok{AUTO\_VI object}\SpecialCharTok{\textgreater{}}
-\NormalTok{Status}\SpecialCharTok{:}
- \SpecialCharTok{{-}}\NormalTok{ Fitted model}\SpecialCharTok{:}\NormalTok{ lm}
- \SpecialCharTok{{-}}\NormalTok{ Keras model}\SpecialCharTok{:}\NormalTok{ (None, }\DecValTok{32}\NormalTok{, }\DecValTok{32}\NormalTok{, }\DecValTok{3}\NormalTok{) }\SpecialCharTok{+}\NormalTok{ (None, }\DecValTok{5}\NormalTok{) }\OtherTok{{-}\textgreater{}}\NormalTok{ (None, }\DecValTok{1}\NormalTok{)}
-    \SpecialCharTok{{-}}\NormalTok{ Output node index}\SpecialCharTok{:} \DecValTok{1}
- \SpecialCharTok{{-}}\NormalTok{ Result}\SpecialCharTok{:}\NormalTok{ UNKNOWN }
-\end{Highlighting}
-\end{Shaded}
-
-The status includes the list of regression model classes (as provided by
-the built-in \texttt{class()} function), the input and output shapes of
-the Keras model in the standard \texttt{Numpy} format
-\citep{harris2020array}, the output node index being monitored, and the
-assessment result. If no check has been run yet, the assessment result
-will display as ``UNKNOWN''.
-
-\subsubsection{Fitted Values and Residuals
-Extraction}\label{fitted-values-and-residuals-extraction}
-
-To be able to predict VSS for a residual plot, both fitted values and
-residuals are needed to be extracted from the regression model object
-supplied by the user. In R, statistical models like \texttt{lm} (linear
-model) and \texttt{glm} (generalized linear model) typically support the
-use of generic functions such as \texttt{fitted()} and \texttt{resid()}
-to retrieve these values. The \texttt{get\_fitted\_and\_resid()} method,
-called by the checker, relies on these generic functions by default.
-However, generic functions only work with classes that have appropriate
-method implementations. Some regression modeling packages may not fully
-adhere to the \texttt{stats} package guidelines for implementing these
-functions. In such cases, overriding the method becomes necessary.
-
-By design, the \texttt{get\_fitted\_and\_resid()} method accepts a
-regression model object as input and returns a \texttt{tibble} (a modern
-presentation of the \texttt{data.frame}) with two columns:
-\texttt{.fitted} and \texttt{.resid}, representing the fitted values and
-residuals, respectively. If no input is supplied, the method uses the
-regression model object stored in the checker. Although modules in the
-\texttt{autovi} infrastructure make minimal assumptions about other
-modules, they do require strictly defined input and output formats to
-ensure data validation and prevent fatal bugs. Therefore, any overridden
-method should follow to these conventions.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{get\_fitted\_and\_resid}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 50 x 2
-   .fitted .resid
-     <dbl>  <dbl>
- 1   -1.85   3.85
- 2   -1.85  11.8 
- 3    9.95  -5.95
- 4    9.95  12.1 
- 5   13.9    2.12
- 6   17.8   -7.81
- 7   21.7   -3.74
- 8   21.7    4.26
- 9   21.7   12.3 
-10   25.7   -8.68
-# i 40 more rows
-\end{verbatim}
-
-\subsubsection{Data Extraction}\label{data-extraction}
-
-For linear regression model in R, the model frame contains all the data
-required by a formula for evaluation. This is essential for
-bootstrapping and refitting the model when constructing a bootstrapped
-distribution of VSS. Typically, the model frame can be extracted from
-the regression model object using the \texttt{model.frame()} generic
-function, which is the default method used by \texttt{get\_data()}.
-However, some regression models do not use a formula or are evaluated
-differently, potentially lacking a model frame. In such cases, users can
-either provide the data used to fit the regression model through the
-\texttt{data} argument when constructing the checker, or customize the
-method to better suit their needs. It's worth noting that this module is
-only necessary if bootstrapping is required, as the model frame is not
-used in other modules of the infrastructure.
-
-The \texttt{get\_data()} method accepts a regression model object as
-input and returns a \texttt{data.frame} representing the model frame of
-the fitted regression model. If no input is supplied, the regression
-model stored in the checker will be used.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{get\_data}\NormalTok{() }\SpecialCharTok{|\textgreater{}} 
-  \FunctionTok{head}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-  dist speed
-1    2     4
-2   10     4
-3    4     7
-4   22     7
-5   16     8
-6   10     9
-\end{verbatim}
-
-\subsubsection{Bootstrapping and Model
-Refitting}\label{bootstrapping-and-model-refitting}
-
-Bootstrapping a regression model typically involves sampling the
-observations with replacement and refitting the model with the
-bootstrapped data. The \texttt{boot\_method()} method follows this
-bootstrapping scheme by default. It accepts a fitted regression model
-and a \texttt{data.frame} as inputs, and returns a \texttt{tibble} of
-bootstrapped residuals. If no inputs are provided, the method uses the
-regression model stored in the checker and the result of the
-\texttt{get\_data()} method.
-
-Note that instead of calling \texttt{get\_data()} implicitly within the
-method, it is used as part of the default argument definition. This
-approach allows users to bypass the \texttt{get\_data()} method entirely
-and directly supply a \texttt{data.frame} to initiate the bootstrap
-process. Many other methods in \texttt{autovi} adopt this principle when
-possible, where dependencies are explicitly listed in the formal
-arguments. This design choice enhances the reusability and isolation of
-modules, offers better control for testing, and simplifies the overall
-process.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{boot\_method}\NormalTok{(}\AttributeTok{data =}\NormalTok{ checker}\SpecialCharTok{$}\FunctionTok{get\_data}\NormalTok{())}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 50 x 2
-   .fitted .resid
-     <dbl>  <dbl>
- 1   27.0   -2.96
- 2   38.8  -12.8 
- 3   34.8   -8.82
- 4   27.0  -13.0 
- 5   11.2    4.76
- 6   42.7   -2.68
- 7   42.7   -2.68
- 8   38.8  -18.8 
- 9   38.8   15.2 
-10   -4.47   6.47
-# i 40 more rows
-\end{verbatim}
-
-\subsubsection{Auxiliary Computation}\label{auxiliary-computation}
-
-As described in \citet{li2024automated}, in some cases, a residual plot
-alone may not provide enough information to accurately determine VSS.
-For instance, when the points in the residual plot have significant
-overlap, the trend and shape of the residual pattern can be difficult to
-discern. Including auxiliary variables, such as the number of
-observations, as additional inputs to the computer vision model can be
-beneficial. To address this, \texttt{autovi} includes internal functions
-within the checker that automatically detect the number of inputs
-required by the provided Keras model. If multiple inputs are necessary,
-the checker invokes the \texttt{auxiliary()} method to compute these
-additional inputs.
-
-The \texttt{auxiliary()} method takes a \texttt{data.frame} containing
-fitted values and residuals as input and returns a \texttt{data.frame}
-with five numeric columns. These columns represent four scagnostics ---
-``Monotonic'', ``Sparse'', ``Striped'', and ``Splines'' --- calculated
-using the \texttt{cassowaryr} package, as well as the number of
-observations. This approach is consistent with the training process of
-the computer vision models described in \citet{li2024automated}. If no
-\texttt{data.frame} is provided, the method will default to retrieving
-fitted values and residuals by calling
-\texttt{get\_fitted\_and\_resid()}.
-
-Technically, any Keras-implemented computer vision model can be adapted
-to accept an image as the primary input and additional variables as
-secondary inputs by adding a data pre-processing layer before the actual
-input layer. If users wish to override \texttt{auxiliary()}, the output
-should be a \texttt{data.frame} with a single row and the number of
-columns such that its concatenation matches the number of parameters for
-the corresponding layer in the supplied Keras model.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{auxiliary}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 1 x 5
-  measure_monotonic measure_sparse measure_splines measure_striped     n
-              <dbl>          <dbl>           <dbl>           <dbl> <int>
-1            0.0621          0.470          0.0901            0.62    50
-\end{verbatim}
-
-\subsubsection{Null Residual Simulation}\label{sec-autovi-null-method}
-
-A fundamental element of the automated residual assessment described in
-\citet{li2024automated} is comparing the VSS of null plots with that of
-the true residual plot. However, due to the variety of regression
-models, there is no universal method for simulating null residuals that
-are consistent with model assumptions. Fortunately, for classical normal
-linear regression models, null residuals can be effectively simulated
-using the residual rotation method, as outlined in
-\citet{buja2009statistical}. This process involves generating random
-draws from a standard normal distribution, regressing these draws on the
-original predictors, and then rescaling the resulting residuals by the
-ratio of the residual sum of squares to the that of the original linear
-regression model. Other regression models, such as \texttt{glm}
-(generalized linear model) and \texttt{gam} (generalized additive
-model), generally cannot use this method to efficiently simulate null
-residuals. Therefore, it is recommended that users override the
-\texttt{null\_method()} to suit their specific model. The
-\texttt{null\_method()} takes a fitted regression model as input,
-defaulting to the regression model stored in the checker, and returns a
-\texttt{tibble}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{null\_method}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 50 x 2
-   .fitted  .resid
-     <dbl>   <dbl>
- 1   -1.85  18.2  
- 2   -1.85  -0.765
- 3    9.95 -12.8  
- 4    9.95  18.6  
- 5   13.9    2.57 
- 6   17.8    7.03 
- 7   21.7  -11.1  
- 8   21.7  -13.2  
- 9   21.7  -12.6  
-10   25.7    3.57 
-# i 40 more rows
-\end{verbatim}
-
-\subsubsection{Plotting}\label{plotting}
-
-Plotting is a crucial aspect of residual plot diagnostics because
-aesthetic elements like marker size, marker color, and auxiliary lines
-impact the presentation of information. There are computer vision models
-trained to handle images captured in various scenarios. For example, the
-VGG16 model \citep{simonyan2014very} can classify objects in images
-taken under different lighting conditions and is robust to image
-rotation. However, data plots are a special type of image as the
-plotting style can always be consistent if controlled properly.
-Therefore, we assume computer vision models built for reading residual
-plots will be trained with residual plots of a specific aesthetic style.
-In this case, it is best to predict plots using the same style for
-optimal performance. The plotting method \texttt{plot\_resid()} handles
-this aspect.
-
-\texttt{plot\_resid()} accepts a \texttt{data.frame} containing fitted
-values and residuals, along with several customization options: a
-\texttt{ggplot} theme, an \texttt{alpha} value to control the
-transparency of data points, a \texttt{size} value to set the size of
-data points, and a \texttt{stroke} value to define the thickness of data
-point edges. Additionally, it includes four Boolean arguments to toggle
-the display of axes, legends, grid lines, and a horizontal red line. By
-default, it replicates the style we used to generate the training
-samples for the computer vision models described in
-\citet{li2024automated}. In brief, the residual plot omits axis text and
-ticks, titles, and background grid lines, featuring only a red line at
-\(y = 0\). It retains only the necessary components of a residual plot.
-If the computer vision model is trained with a different but consistent
-aesthetic style, \texttt{plot\_resid()} should be overridden.
-
-The method returns a \texttt{ggplot} object
-(Figure~\ref{fig-autovi-plot-resid}), which can be saved as a PNG file
-in the following module. If no data is provided, the method will use
-\texttt{get\_fitted\_and\_resid()} to retrieve the fitted values and
-residuals from the regression model stored in the checker.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{plot\_resid}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-\centering{
-
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-plot-resid-1.pdf}
-
-}
-
-\caption{\label{fig-autovi-plot-resid}Residual plot of the regression
-model stored in the checker.}
-
-\end{figure}%
-
-To manually generate true residual plots, null plots, or bootstrapped
-residual plots, you can pass the corresponding \texttt{data.frame}
-produced by the \texttt{get\_fitted\_and\_resid()},
-\texttt{null\_method()}, and \texttt{boot\_method()} methods to the
-\texttt{plot\_resid()} method, respectively.
-
-\subsubsection{Plot Saving}\label{plot-saving}
-
-Another key aspect of a standardized residual plot is its resolution. In
-\citet{li2024automated}, we used an image format of 420 pixels in height
-and 525 pixels in width. This resolution was chosen because the original
-set, consisting of 20 residual plots arranged in a four by five grid,
-was represented by an image of 2100 by 2100 pixels. The
-\texttt{save\_plot()} method accepts a \texttt{ggplot} object as input
-and saves it as a PNG file to the location specified by the
-\texttt{path} argument. If no path is provided, the PNG file is saved to
-a temporary file.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{plot\_resid}\NormalTok{() }\SpecialCharTok{|\textgreater{}} 
-\NormalTok{  checker}\SpecialCharTok{$}\FunctionTok{save\_plot}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[1] "/var/folders/61/bv7_1qzs20x6fjb2rsv7513r0000gn/T//Rtmp6Lce76/file135f86b4a7b69.png"
-\end{verbatim}
-
-\subsubsection{Image Reading and
-Resizing}\label{image-reading-and-resizing}
-
-When training computer vision models, it is common to test various input
-sizes for the same architecture to identify the optimal setup. This
-involves preparing the original training image at a higher resolution
-than required and then resizing it to match the input size during
-training. The \texttt{autovi} package includes a class,
-\texttt{KERAS\_WRAPPER}, to simplify this process. This Keras wrapper
-class features a method called \texttt{image\_to\_array()}, which reads
-an image as a \texttt{PIL} image using the \texttt{pillow} Python
-package, resizes it to the target input size required by the Keras
-model, and converts it to a \texttt{Numpy} array.
-
-To construct a \texttt{KERAS\_WRAPPER} object, you need to provide the
-Keras model as the main argument. However, users generally do not need
-to interact with this class directly, as the \texttt{autovi} checker
-automatically invokes its methods when performing VSS predictions. The
-\texttt{image\_to\_array()} method takes the path to the image file, the
-target height, and the target width as inputs and returns a
-\texttt{Numpy} array. If not specified, the target height and target
-width will be retrieved from the input layer of the Keras model by the
-\texttt{get\_input\_height()} and \texttt{get\_input\_width()} method of
-\texttt{KERAS\_WRAPPER}.
-
-The following code example demonstrate the way to manually generate the
-true residual plot, save it as PNG file, and load it back as
-\texttt{Numpy} array.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{wrapper }\OtherTok{\textless{}{-}} \FunctionTok{keras\_wrapper}\NormalTok{(}\AttributeTok{keras\_model =}\NormalTok{ checker}\SpecialCharTok{$}\NormalTok{keras\_model)  }
-\NormalTok{input\_array }\OtherTok{\textless{}{-}}\NormalTok{ checker}\SpecialCharTok{$}\FunctionTok{plot\_resid}\NormalTok{() }\SpecialCharTok{|\textgreater{}} 
-\NormalTok{  checker}\SpecialCharTok{$}\FunctionTok{save\_plot}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
-\NormalTok{  wrapper}\SpecialCharTok{$}\FunctionTok{image\_to\_array}\NormalTok{()}
-\NormalTok{input\_array}\SpecialCharTok{$}\NormalTok{shape}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-(1, 32, 32, 3)
-\end{verbatim}
-
-\subsubsection{Visual Signal Strength (VSS)
-Prediction}\label{visual-signal-strength-vss-prediction}
-
-VSS, as discussed in \citet{li2024automated}, estimates the distance
-between the input residual plot and a theoretically good residual plot.
-It can be defined in various ways, much like different methods for
-measuring the distance between two points. This will not impact the
-\texttt{autovi} infrastructure as long as the provided Keras model can
-predict the intended measure.
-
-There are several ways to obtain VSS from the checker, with the most
-direct being the \texttt{vss()} method. By default, this method predicts
-the VSS for the true residual plot. If a \texttt{ggplot} or a
-\texttt{data.frame}, such as null residuals generated by the
-\texttt{null\_method()}, is explicitly provided, the method will use
-that input to predict VSS accordingly. Note that if a \texttt{ggplot} is
-provided, auxiliary inputs must be supplied manually via the
-\texttt{auxiliary} argument, as we assume that auxiliary variables can
-not be computed directly from a \texttt{ggplot}.
-
-Another way to obtain VSS is by calling the \texttt{check()} method.
-This comprehensive method perform extensive diagnostics on the true
-residual plot and store the VSS in the \texttt{check\_result} field of
-the checker. Additionally, for obtaining VSS for null residual plots and
-bootstrapped residual plots, there are two specialized methods,
-\texttt{null\_vss()} and \texttt{boot\_vss()}, designed for this purpose
-respectively.
-
-Calling the \texttt{vss()} method without arguments will predict the VSS
-for the true residual plot and return the result as a single-element
-\texttt{tibble}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{vss}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 1 x 1
-    vss
-  <dbl>
-1  3.16
-\end{verbatim}
-
-Providing a \texttt{data.frame} of null residuals or a null residual
-plot yields the same VSS.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{null\_resid }\OtherTok{\textless{}{-}}\NormalTok{ checker}\SpecialCharTok{$}\FunctionTok{null\_method}\NormalTok{()}
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{vss}\NormalTok{(null\_resid)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 1 x 1
-    vss
-  <dbl>
-1  1.23
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{null\_resid }\SpecialCharTok{|\textgreater{}}
-\NormalTok{  checker}\SpecialCharTok{$}\FunctionTok{plot\_resid}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
-\NormalTok{  checker}\SpecialCharTok{$}\FunctionTok{vss}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 1 x 1
-    vss
-  <dbl>
-1  1.23
-\end{verbatim}
-
-The \texttt{null\_vss()} helper method primarily takes the number of
-null plots as input. If the user wants to use a ad hoc null simulation
-scheme, it can be provided via the \texttt{null\_method} argument.
-Intermediate results, including null residuals and null plots, can be
-returned by enabling \texttt{keep\_null\_data} and
-\texttt{keep\_null\_plot}. The VSS, along with null residuals and null
-plots, will be stored in a \texttt{tibble} with three columns. The
-following code example demonstrates how to predict the VSS for five null
-residual plots while keeping the intermediate results.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{null\_vss}\NormalTok{(}\DecValTok{5}\NormalTok{L, }
-                 \AttributeTok{keep\_null\_data =} \ConstantTok{TRUE}\NormalTok{, }
-                 \AttributeTok{keep\_null\_plot =} \ConstantTok{TRUE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 5 x 3
-    vss data              plot  
-  <dbl> <list>            <list>
-1 0.982 <tibble [50 x 2]> <gg>  
-2 1.58  <tibble [50 x 2]> <gg>  
-3 2.09  <tibble [50 x 2]> <gg>  
-4 0.742 <tibble [50 x 2]> <gg>  
-5 2.21  <tibble [50 x 2]> <gg>  
-\end{verbatim}
-
-The \texttt{boot\_vss()} helper method is similar to
-\texttt{null\_vss()}, with some differences in argument names. The
-following code example demonstrates how to predict the VSS for five
-bootstrapped residual plots while keeping the intermediate results.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{boot\_vss}\NormalTok{(}\DecValTok{5}\NormalTok{L,}
-                 \AttributeTok{keep\_boot\_data =} \ConstantTok{TRUE}\NormalTok{,}
-                 \AttributeTok{keep\_boot\_plot =} \ConstantTok{TRUE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 5 x 3
-    vss data              plot  
-  <dbl> <list>            <list>
-1  3.12 <tibble [50 x 2]> <gg>  
-2  2.37 <tibble [50 x 2]> <gg>  
-3  2.87 <tibble [50 x 2]> <gg>  
-4  1.85 <tibble [50 x 2]> <gg>  
-5  3.66 <tibble [50 x 2]> <gg>  
-\end{verbatim}
-
-\subsubsection{\texorpdfstring{\(p\)-value
-Computation}{p-value Computation}}\label{p-value-computation}
-
-Once we have obtained the VSS from both the true residual plot and the
-null plots, we can compute the \(p\)-value. This \(p\)-value represents
-the ratio of plots with VSS greater than or equal to that of the true
-residual plot. We can perform this calculation using the
-\texttt{check()} method. The main inputs for this method are the number
-of null plots and the number of bootstrapped plots to generate. If you
-need to access intermediate residuals and plots, you can enable the
-\texttt{keep\_data} and \texttt{keep\_plot} options. The method stores
-the final result in the \texttt{check\_result} field of the object. To
-obtain the p-value using the \texttt{check()} method, you can use the
-following code.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{check}\NormalTok{(}\AttributeTok{boot\_draws =} \DecValTok{100}\NormalTok{L, }\AttributeTok{null\_draws =} \DecValTok{100}\NormalTok{L)}
-\NormalTok{checker}\SpecialCharTok{$}\NormalTok{check\_result}\SpecialCharTok{$}\NormalTok{p\_value}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[1] 0.02970297
-\end{verbatim}
-
-\subsection{Summary Plots}\label{summary-plots}
-
-After executing the \texttt{check()} method, \texttt{autovi} offers two
-visualization options for the assessment result through the
-\texttt{summary\_plot()} method, including the density plot and the rank
-plot. We have already discussed and interpreted the density plot in
-Section~\ref{sec-autovi-usage}. Here, we would like to highlight the
-flexibility in choosing which elements to display in the density plot as
-shown in Figure~\ref{fig-autovi-summary-plot-option}. For instance, you
-can omit the bootstrapped distribution by setting \texttt{boot\_dist} to
-\texttt{NULL}. Similarly, you can hide the null distribution
-(\texttt{null\_dist}), the \(p\)-value (\texttt{p\_value}), or the
-likelihood ratio (\texttt{likelihood\_ratio}) as needed. The following
-example demonstrates how to create a summary plot without the results
-from bootstrapped plots.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{summary\_plot}\NormalTok{(}\AttributeTok{boot\_dist =} \ConstantTok{NULL}\NormalTok{,}
-                     \AttributeTok{likelihood\_ratio =} \ConstantTok{NULL}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-\centering{
-
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-summary-plot-option-1.pdf}
-
-}
-
-\caption{\label{fig-autovi-summary-plot-option}Density plot of the VSS
-for null plots.}
-
-\end{figure}%
-
-This customization allows you to focus on specific aspects of the
-assessment, tailoring the visualization to your analytical needs.
-
-The rank plot (Figure~\ref{fig-autovi-rank-plot}), creating by setting
-\texttt{type} to ``rank'', is a bar plot where the \(x\)-axis represents
-the rank and the \(y\)-axis shows the VSS. The bar that is coloured in
-red corresponding to the VSS of the true residual plot. By examining the
-rank plot, you can intuitively understand how the observed VSS compares
-to the null VSSs and identify any outliers in the null distribution.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{summary\_plot}\NormalTok{(}\AttributeTok{type =} \StringTok{"rank"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
-
-\centering{
-
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-rank-plot-1.pdf}
-
-}
-
-\caption{\label{fig-autovi-rank-plot}Rank plot of the VSS for null
-plots.}
-
-\end{figure}%
-
-\subsection{Feature Extraction}\label{feature-extraction}
-
-In addition to predicting VSS and computing \(p\)-values,
-\texttt{autovi} offers methods to extract features from any layer of the
-Keras model. To see which layers are available in the current Keras
-model, you can use the \texttt{list\_layer\_name()} method from the
-\texttt{KERAS\_WRAPPER} class.
-
-The following code example lists the layer names of the currently used
-Keras model:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{wrapper }\OtherTok{\textless{}{-}} \FunctionTok{keras\_wrapper}\NormalTok{(checker}\SpecialCharTok{$}\NormalTok{keras\_model)}
-\NormalTok{wrapper}\SpecialCharTok{$}\FunctionTok{list\_layer\_name}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
- [1] "input_1"                  "tf.__operators__.getitem"
- [3] "tf.nn.bias_add"           "grey_scale"              
- [5] "block1_conv1"             "batch_normalization"     
- [7] "activation"               "block1_conv2"            
- [9] "batch_normalization_1"    "activation_1"            
-[11] "block1_pool"              "dropout"                 
-[13] "block2_conv1"             "batch_normalization_2"   
-[15] "activation_2"             "block2_conv2"            
-[17] "batch_normalization_3"    "activation_3"            
-[19] "block2_pool"              "dropout_1"               
-[21] "block3_conv1"             "batch_normalization_4"   
-[23] "activation_4"             "block3_conv2"            
-[25] "batch_normalization_5"    "activation_5"            
-[27] "block3_conv3"             "batch_normalization_6"   
-[29] "activation_6"             "block3_pool"             
-[31] "dropout_2"                "block4_conv1"            
-[33] "batch_normalization_7"    "activation_7"            
-[35] "block4_conv2"             "batch_normalization_8"   
-[37] "activation_8"             "block4_conv3"            
-[39] "batch_normalization_9"    "activation_9"            
-[41] "block4_pool"              "dropout_3"               
-[43] "block5_conv1"             "batch_normalization_10"  
-[45] "activation_10"            "block5_conv2"            
-[47] "batch_normalization_11"   "activation_11"           
-[49] "block5_conv3"             "batch_normalization_12"  
-[51] "activation_12"            "block5_pool"             
-[53] "dropout_4"                "global_max_pooling2d"    
-[55] "additional_input"         "concatenate"             
-[57] "dense"                    "dropout_5"               
-[59] "activation_13"            "dense_1"                 
-\end{verbatim}
-
-Among these layers, the ``global\_max\_pooling2d'' layer is a 2D global
-max pooling layer that outputs the results from the last convolutional
-blocks. As \citet{simonyan2014very} noted, all preceding convolutional
-blocks can be viewed as a large feature extractor. Consequently, the
-output from this layer provides features that can be utilized for
-various purposes, such as performing transfer learning.
-
-To obtain the features, provide the layer name using the
-\texttt{extract\_feature\_from\_layer} argument in the
-\texttt{predict()} method. This will return a \texttt{tibble} with the
-VSS and all features extracted from that layer. Each row corresponds to
-one plot. The features will be flattened into 2D and named with the
-prefix ``f\_'' followed by a number from one to the total number of
-features.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{plot\_resid}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
-\NormalTok{  checker}\SpecialCharTok{$}\FunctionTok{save\_plot}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
-\NormalTok{  wrapper}\SpecialCharTok{$}\FunctionTok{image\_to\_array}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
-\NormalTok{  wrapper}\SpecialCharTok{$}\FunctionTok{predict}\NormalTok{(}\AttributeTok{auxiliary =}\NormalTok{ checker}\SpecialCharTok{$}\FunctionTok{auxiliary}\NormalTok{(),}
-                  \AttributeTok{extract\_feature\_from\_layer =} \StringTok{"global\_max\_pooling2d"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 1 x 257
-    vss   f_1   f_2   f_3   f_4   f_5    f_6   f_7    f_8   f_9   f_10  f_11
-  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl> <dbl>  <dbl> <dbl>
-1  3.16 0.151     0     0     0     0 0.0203 0.109 0.0203     0 0.0834     0
-# i 245 more variables: f_12 <dbl>, f_13 <dbl>, f_14 <dbl>, f_15 <dbl>,
-#   f_16 <dbl>, f_17 <dbl>, f_18 <dbl>, f_19 <dbl>, f_20 <dbl>, f_21 <dbl>,
-#   f_22 <dbl>, f_23 <dbl>, f_24 <dbl>, f_25 <dbl>, f_26 <dbl>, f_27 <dbl>,
-#   f_28 <dbl>, f_29 <dbl>, f_30 <dbl>, f_31 <dbl>, f_32 <dbl>, f_33 <dbl>,
-#   f_34 <dbl>, f_35 <dbl>, f_36 <dbl>, f_37 <dbl>, f_38 <dbl>, f_39 <dbl>,
-#   f_40 <dbl>, f_41 <dbl>, f_42 <dbl>, f_43 <dbl>, f_44 <dbl>, f_45 <dbl>,
-#   f_46 <dbl>, f_47 <dbl>, f_48 <dbl>, f_49 <dbl>, f_50 <dbl>, f_51 <dbl>, ...
-\end{verbatim}
-
-Alternatively, the \texttt{AUTO\_VI} class provides a way to extract
-features using the \texttt{vss()} method. This method is essentially a
-high-level wrapper around the \texttt{predict()} method of
-\texttt{KERAS\_WRAPPER}, but it offers a more straightforward interface
-and better default arguments.
-
-The results from the previous code example can be replicated with a
-single line of code as shown below.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{checker}\SpecialCharTok{$}\FunctionTok{vss}\NormalTok{(}\AttributeTok{extract\_feature\_from\_layer =} \StringTok{"global\_max\_pooling2d"}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-# A tibble: 1 x 257
-    vss   f_1   f_2   f_3   f_4   f_5    f_6   f_7    f_8   f_9   f_10  f_11
-  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl>  <dbl> <dbl>  <dbl> <dbl>
-1  3.16 0.151     0     0     0     0 0.0203 0.109 0.0203     0 0.0834     0
-# i 245 more variables: f_12 <dbl>, f_13 <dbl>, f_14 <dbl>, f_15 <dbl>,
-#   f_16 <dbl>, f_17 <dbl>, f_18 <dbl>, f_19 <dbl>, f_20 <dbl>, f_21 <dbl>,
-#   f_22 <dbl>, f_23 <dbl>, f_24 <dbl>, f_25 <dbl>, f_26 <dbl>, f_27 <dbl>,
-#   f_28 <dbl>, f_29 <dbl>, f_30 <dbl>, f_31 <dbl>, f_32 <dbl>, f_33 <dbl>,
-#   f_34 <dbl>, f_35 <dbl>, f_36 <dbl>, f_37 <dbl>, f_38 <dbl>, f_39 <dbl>,
-#   f_40 <dbl>, f_41 <dbl>, f_42 <dbl>, f_43 <dbl>, f_44 <dbl>, f_45 <dbl>,
-#   f_46 <dbl>, f_47 <dbl>, f_48 <dbl>, f_49 <dbl>, f_50 <dbl>, f_51 <dbl>, ...
-\end{verbatim}
-
-The argument \texttt{extract\_feature\_from\_layer} is also available in
-other functions that build on the \texttt{vss()} method, including
-\texttt{null\_vss()}, \texttt{boot\_vss()}, and \texttt{check()}.
-
-\subsection{Trained Model Hosting}\label{sec-trained-model-hosting}
-
-The trained computer vision models described in \citet{li2024automated}
-are hosted on a GitHub repository at
-\url{https://github.com/TengMCing/autovi_data}. Currently, there are six
-models available. You can view them by calling
-\texttt{list\_keras\_model()}, which will return a \texttt{tibble}
-showing the input shape and a description of each model.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{list\_keras\_model}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
-  \FunctionTok{str}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-tibble [6 x 11] (S3: tbl_df/tbl/data.frame)
- $ model_name          : chr [1:6] "vss_32" "vss_64" "vss_128" "vss_phn_32" ...
- $ path                : chr [1:6] "keras_model/vss_32.keras.zip" "keras_model/vss_64.keras.zip" "keras_model/vss_128.keras.zip" "keras_model/vss_phn_32.keras.zip" ...
- $ volume_path         : chr [1:6] "keras_model_volumes/vss_32.zip.001" "keras_model_volumes/vss_64.zip.001" "keras_model_volumes/vss_128.zip.001" "keras_model_volumes/vss_phn_32.zip.001" ...
- $ volume_size         : int [1:6] 4 1 8 2 8 8
- $ npz_path            : chr [1:6] "keras_model_npz/vss_32.npz" "keras_model_npz/vss_64.npz" "keras_model_npz/vss_128.npz" "keras_model_npz/vss_phn_32.npz" ...
- $ npz_py              : chr [1:6] "keras_model_npz/vss_32_rebuild.py" "keras_model_npz/vss_64_rebuild.py" "keras_model_npz/vss_128_rebuild.py" "keras_model_npz/vss_phn_32_rebuild.py" ...
- $ input_height        : int [1:6] 32 64 128 32 64 128
- $ input_width         : int [1:6] 32 64 128 32 64 128
- $ input_channels      : int [1:6] 3 3 3 3 3 3
- $ auxiliary_input_size: int [1:6] 0 0 0 5 5 5
- $ description         : chr [1:6] "A Keras model trained with residual plots containing non-linearity and heteroskedasticity patterns." "A Keras model trained with residual plots containing non-linearity and heteroskedasticity patterns." "A Keras model trained with residual plots containing non-linearity and heteroskedasticity patterns." "A Keras model trained with residual plots containing non-linearity, heteroskedasticity and non-normality patterns." ...
-\end{verbatim}
-
-The \texttt{get\_keras\_model()} function can be used to download a
-model to a temporary directory and load it into memory using
-\texttt{TensorFlow}. It requires only the model name, which is the value
-in the first column of the \texttt{tibble} returned by
-\texttt{list\_keras\_model()}.
+specific needs. These modules are discussed in detail on the software's
+website.
 
 \section{Web interface: autovi.web}\label{sec-autovi-web}
 
@@ -1568,7 +789,7 @@ resources.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{figures/autovi_web.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{figures/autovi_web.png}
 
 }
 
@@ -1638,7 +859,7 @@ interface interprets the data correctly.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{figures/autovi_web_type.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{figures/autovi_web_type.png}
 
 }
 
@@ -1707,7 +928,7 @@ Figure~\ref{fig-autovi-web-result2}.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{figures/autovi_web_result.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{figures/autovi_web_result.png}
 
 }
 
@@ -1724,7 +945,7 @@ displays a lineup of residual plots.}
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{figures/autovi_web_result2.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{figures/autovi_web_result2.png}
 
 }
 
@@ -1741,7 +962,7 @@ residual plot.}
 
 \centering{
 
-\includegraphics[width=0.5\textwidth,height=\textheight]{figures/autovi_web_gradient_hide.png}
+\includegraphics[width=0.5\linewidth,height=\textheight,keepaspectratio]{figures/autovi_web_gradient_hide.png}
 
 }
 
@@ -1872,7 +1093,7 @@ ensuring the quality of the assessment.
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example1-1.png}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example1-1.png}
 
 }
 
@@ -1887,7 +1108,7 @@ which the data status and CSV type will be automatically updated.}
 
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example2-1.png}
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example2-1.png}
 
 }
 
@@ -1903,7 +1124,7 @@ assessment without this label.}
 
 \centering{
 
-\includegraphics[width=0.55\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example3-1.png}
+\includegraphics[width=0.55\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example3-1.png}
 
 }
 
@@ -1918,7 +1139,7 @@ assessment of the lineup example data by clicking the run button.}
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example4-1.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example4-1.png}
 
 }
 
@@ -1933,7 +1154,7 @@ decision-making.}
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example5-1.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example5-1.png}
 
 }
 
@@ -1946,7 +1167,7 @@ plots allows for manual inspection.}
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example6-1.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example6-1.png}
 
 }
 
@@ -1960,7 +1181,7 @@ distribution.}
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example7-1.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example7-1.png}
 
 }
 
