@@ -491,7 +491,9 @@ before using the \texttt{autovi} package.
 We recommend using the Shiny app \texttt{autovi.web} if encountering
 installation problems.
 
-\subsection{Numerical Summary}\label{sec-autovi-usage}
+\subsection{Usage}\label{sec-autovi-usage}
+
+\subsubsection{Numerical Summary}\label{sec-autovi-numerical}
 
 Three steps are needed to get an automated assessment of a set of
 residuals and fitted values:
@@ -561,7 +563,7 @@ likelihood of model violations. The likelihood is computed from the
 proportion of values greater than the observed VSS in both the
 bootstrapped data values and the simulated null values.
 
-\subsection{Visual Summary}\label{sec-autovi-visual}
+\subsubsection{Visual Summary}\label{sec-autovi-visual}
 
 Users can visually inspect the original residual plot alongside a sample
 null plot using \texttt{plot\_pair()} or a lineup of null plot
@@ -699,11 +701,9 @@ Python environments or handling version requirements for R libraries.
 The platform is cross-platform and accessible on various devices and
 operating systems, making it suitable even for users without R
 programming experience. Additionally, updates are managed centrally,
-ensuring that users always have access to the latest features.
-
-The \texttt{autovi.web} interface is available at
-\url{autoviweb.netlify.app}. This section discusses the implementation
-based on \texttt{autovi.web} version 0.1.0.
+ensuring that users always have access to the latest features. This
+section discusses the implementation based on \texttt{autovi.web}
+version 0.1.0.
 
 \subsection{Implementation}\label{implementation}
 
@@ -783,324 +783,88 @@ Shiny framework. The specialized JavaScript code for initializing
 prediction is deployed alongside the Shiny application as additional
 resources.
 
-\subsection{Design}\label{sec-autovi-web-design}
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{figures/autovi_web.png}
-
-}
-
-\caption{\label{fig-autovi-web}Overview of the \texttt{autovi.web}
-graphical user interface (GUI). This default view may change based on
-user interactions. Region 1 is the sidebar menu, containing the residual
-assessment tab and the information tab. Region 2 is the data upload
-panel, where users can provide a CSV file and specify the type of data
-it contains. Region 3 includes dropdown menus for selecting the columns
-to be analyzed, a slider to control the number of bootstrapping samples,
-and a numeric input box for setting the simulation seed. Region 4
-displays the initialization status and offers a button to start the
-analysis. Region 5 is empty in the default view but will be populated
-with results once the analysis is started.}
-
-\end{figure}%
-
-While the R package \texttt{autovi} aims to provide tools that can be
-extended to broader visual inference applications, \texttt{autovi.web}
-is only focus on providing a straightforward and clean user interface.
-An overview of the graphical user interface of \texttt{autovi.web} is
-provided in Figure~\ref{fig-autovi-web}. This is the default view of the
-web application, and there are five regions that user can mainly
-interact with. Region 1 of Figure~\ref{fig-autovi-web} is a sidebar menu
-which can switch between the analysis page and the information page. The
-analysis page is the focus of this section.
-
-Region 2 of Figure~\ref{fig-autovi-web} is a panel for data uploading
-and CSV type selection. Clicking the ``upload CSV'' button opens a
-window where the user can select a file from their local system. The
-data status displayed above the button provides information about the
-number of rows and columns in the current dataset. Additionally, there
-are two example datasets available beneath the ``upload CSV'' button:
-one is a lineup example using a CSV file with three columns, and the
-other is a single plot example using a CSV file with two columns. More
-details about these example datasets are be discussed in
-Section~\ref{sec-autovi-web-workflow}.
-
-While the \texttt{autovi} package typically expects a fitted regression
-model object provided by the user, this approach is impractical for a
-web interface. Saving the R model object to the filesystem involves
-extra steps and requires users to have specific knowledge, which does
-not align with the goal of the web application. Moreover, the regression
-model object may contain sensitive, non-shareable data, making it
-unsuitable for uploading. Additionally, model objects are often
-unnecessarily large, containing extra information not needed for
-residual diagnostics. In contrast, a CSV file is easier to generate
-using various software programs, not just R. CSV files are widely
-accepted and can be easily viewed and modified using common desktop
-applications like Excel. They are generally less sensitive than raw
-data, as they exclude most information about the predictors.
-
-The web application is designed to assess either a single residual plot
-or a lineup of residual plots. Therefore, it accepts only two types of
-CSV files: one with at least two columns representing the fitted values
-and residuals of a single residual plot, and another with at least three
-columns, where the additional column serves as the label or identifier
-for a lineup of multiple residual plots. For a single residual plot, 19
-null plots are generated by simulating normal random draws from a
-distribution with the same variance as the original residual plot, and
-comparisons are made with the original residual plot. For a lineup,
-comparisons are made among the plots within the lineup. After uploading
-the CSV file, the user must select the correct format to ensure the web
-interface interprets the data correctly.
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{figures/autovi_web_type.png}
-
-}
-
-\caption{\label{fig-autovi-web-type}The panels for selecting target
-columns and simulation settings are updated when a different CSV type is
-selected in the left panel. Compared to Figure~\ref{fig-autovi-web},
-where the CSV type is a single residual plot, choosing a CSV type that
-includes a lineup of multiple residual plots adds a dropdown menu for
-specifying a column for the residual plot identifier. Additionally, an
-optional dropdown menu for specifying the true residual plot identifier
-will appear under the simulation settings.}
-
-\end{figure}%
-
-Region 3 of Figure~\ref{fig-autovi-web} is a panel for column selection
-and simulation settings. As shown in Figure~\ref{fig-autovi-web}, if the
-CSV type is set to a single residual plot, there will be two dropdown
-menus for specifying the columns for fitted values and residuals,
-respectively. The default variable names for these columns are
-\texttt{.fitted} and \texttt{.resid}. After uploading the CSV file, the
-content of these dropdown menus will be updated to reflect the existing
-columns in the dataset. As displayed in
-Figure~\ref{fig-autovi-web-type}, for the CSV type that is a lineup of
-multiple residual plots, an additional dropdown menu will appear for
-specifying the column of residual plot labels. The default variable name
-for this column is \texttt{.sample}. If this variable name does not
-exist in the dataset, the dropdown menu will remain empty, allowing the
-user to specify the correct column. The number of levels for each option
-in this dropdown menu will be displayed to help avoid the selection of a
-variable with too many levels, which could significantly slow down the
-application due to extensive computation.
-
-Under the simulation settings, there is a slider for specifying the
-number of bootstrapped samples needed for the assessment. A higher value
-on this slider will result in a more accurate bootstrap distribution
-estimation, though it will require more computation time. The simulation
-seed can be set in a numeric input box below the slider to control the
-reproducibility of the assessment. By default, a random seed is set each
-time the web page is refreshed. When the CSV type is a lineup of
-multiple residual plots, an optional dropdown menu will appear next to
-the simulation seed input box, allowing the user to specify an
-identifier for the true residual plot. If no label is provided for the
-true residual plot, the assessment will only estimate the VSS for each
-residual plot in the lineup, without providing a \(p\)-value, as it
-cannot be computed. Consequently, some result panels may be missing due
-to insufficient information. This option is useful when the lineup
-consists solely of null plots or if the user simply wants to obtain the
-VSS for multiple residual plots.
-
-Region 4 of Figure~\ref{fig-autovi-web} is the panel for triggering the
-assessment. It contains a large play button to start the assessment.
-Above the play button, a text message displays the status of
-\texttt{TensorFlow.js}, allowing users to monitor whether the JavaScript
-library and Keras model have been loaded correctly. The play button will
-remain disabled until both the data status in Region 1 and the
-\texttt{TensorFlow.js} status in Region 4 indicate that everything is
-ready, with both showing a green status.
-
-Once the play button is clicked, region 5 of Figure~\ref{fig-autovi-web}
-will be populated with panels displaying the assessment results.
-Generally, there will be four result panels, as shown in
-Figure~\ref{fig-autovi-web-result} and
-Figure~\ref{fig-autovi-web-result2}.
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{figures/autovi_web_result.png}
-
-}
-
-\caption{\label{fig-autovi-web-result}The first two panels of results
-from the automated residual assessment are shown. The application
-provides four results panels in total, and these screenshots display the
-first two. In region 1, there is an interactive table detailing the VSS,
-with a summary of the analysis provided in the paragraph below. Region 2
-displays a lineup of residual plots.}
-
-\end{figure}%
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{figures/autovi_web_result2.png}
-
-}
-
-\caption{\label{fig-autovi-web-result2}The last two panels of results
-from the automated residual assessment are shown. The application
-provides four results panels in total, and these screenshots display the
-final two. Region 1 presents a density plot comparing the bootstrapped
-VSS with the null VSS. Region 2 includes an attention map of the true
-residual plot.}
-
-\end{figure}%
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=0.5\linewidth,height=\textheight,keepaspectratio]{figures/autovi_web_gradient_hide.png}
-
-}
-
-\caption{\label{fig-autovi-web-gradient-hide}The attention map is hidden
-if the assessment indicates a \(p\)-value greater than 0.05. A button is
-available to toggle the display of the attention map.}
-
-\end{figure}%
-
-Region 6 of Figure~\ref{fig-autovi-web-result} contains an interactive
-table created with the R package \texttt{DT} \citep{dt}, which provides
-the VSS. This table includes four columns: \texttt{.sample},
-\texttt{vss}, \texttt{rank}, and \texttt{null}. The \texttt{.sample}
-column shows the residual plot labels. For a CSV type that is a lineup,
-these labels are taken from an identifier column in the dataset
-specified by the user. In the case of the CSV type is a single residual
-plot, labels are automatically generated from 1 to 20, with the true
-residual plot receiving a randomly assigned label. The \texttt{vss}
-column displays the VSS for each residual plot, rounded to three decimal
-places. The \texttt{rank} column indicates the ranking of each residual
-plot based on VSS. The \texttt{null} column reveals whether the plot is
-a null plot. For the CSV type that is a single residual plot, only the
-true residual plot will have ``false'' in this column, while all other
-plots will be marked ``true.'' For the CSV type that is a lineup, if the
-true residual plot identifier has not been provided, this column will
-show ``NA'' to represent missing values. If the identifier is provided
-by user, the column behaves as if the CSV type is a single residual
-plot.
-
-The \texttt{DT} table provides several interactive features. Users can
-download the table in four formats, including text, CSV, Excel, and PDF,
-using the buttons located above the table. Additionally, the table is
-searchable via the text input field also positioned above it. Below the
-table, a text message displays the \(p\)-value of the assessment for the
-true residual plot and summarizes the number of null plots with VSS
-greater than that of the true residual plot. This helps the user
-determine whether the true residual plot shows visual patterns that
-suggest model violations.
-
-Region 7 of Figure~\ref{fig-autovi-web-result} provides a lineup of
-plots corresponding to each \texttt{.sample} value from the table in
-Region 6. Due to space limitations, a maximum of 20 residual plots will
-be displayed, ensuring that the true residual plot, if known, will be
-included in the lineup. The plots are generated using \texttt{ggplot2},
-the same as in \texttt{autovi}. Users can perform a visual test with
-this lineup to check if the true residual plot is distinguishable from
-the other plots, helping to determine the significance of model
-violations.
-
-Region 8 of Figure~\ref{fig-autovi-web-result2} displays the density
-plot for bootstrapped VSS and null VSS. The densities are shown in
-distinct colors that are friendly for colorblind users. A solid vertical
-line marks the VSS of the true residual plot, while rug lines at the
-bottom of the plot provide a clearer view of individual cases. Below the
-plot, a text message indicates the number and percentage of bootstrapped
-residual plots that would be rejected by the visual test when compared
-to the null plots. Note that the bootstrapped residual plots in this
-application are generated differently from \texttt{autovi}. Since we do
-not have the R model object, we can not refit the regression model with
-bootstrapped data. Instead, we bootstrap the residuals of the true
-residual plot directly to obtain bootstrapped residual plots. As as
-result, this panel will disappear when the true residual plot is
-unknown.
-
-Region 9 of Figure~\ref{fig-autovi-web-result2} displays an attention
-map for the true residual plot, generated by computing the gradient of
-the Keras model's output with respect to the greyscale input of the
-plot. The attention map helps to understand how the Keras model predicts
-VSS and which areas it is focusing on. We use a greyscale input because
-it is easier to generate a clear attention map in this format, and it
-usually conveys all the essential information, as most of the important
-details of the plot are drawn in black. If the \(p\)-value of the true
-residual plot is greater than 0.05, checking the attention map is not
-necessary. However, to provide users with the option to review it if
-they wish, a button will be available, as shown in
-Figure~\ref{fig-autovi-web-gradient-hide}. This button allows users to
-toggle the display of the attention map.
-
-\subsection{Workflow}\label{sec-autovi-web-workflow}
+\subsection{Usage}\label{sec-autovi-web-workflow}
 
 The workflow of \texttt{autovi.web} is designed to be straightforward,
-with numbered steps displayed in each panel shown in
-Figure~\ref{fig-autovi-web}. There are two example datasets provided by
-the web application, as mentioned in
-Section~\ref{sec-autovi-web-design}. The single residual plot example
-uses the \texttt{dino} dataset from the R package \texttt{datasauRus}
-\citep{datasaurus}. The lineup example uses residuals from a simulated
-regression model that has a non-linearity issue. We will walk through
-the lineup example to further demonstrate the workflow of the web
-application.
+with numbered steps displayed in each panel. There are two example
+datasets provided by the web application. The single residual plot
+example uses the \texttt{dino} dataset from the R package
+\texttt{datasauRus} \citep{datasaurus}. The lineup example uses
+residuals from a simulated regression model that has a non-linearity
+issue. We will walk through the lineup example to further demonstrate
+the workflow of the web application.
 
-As shown in Figure~\ref{fig-autovi-web-workflow-example1}, to use the
-lineup example data, click the ``Use Lineup Example'' button. The data
-status will then update to show the number of rows and columns in the
-dataset, and the CSV type will automatically be selected to the correct
-option. Since the example dataset follows the variable naming
+\subsubsection{Reading data and setting
+parameters}\label{reading-data-and-setting-parameters}
+
+The user can select to upload data as either a single set of residuals
+or a pre-computed lineup of residuals and nulls. Here we illustrate use
+with lineup example data sets (Figure~\ref{fig-autovi-web-setup}). To
+use the lineup example data, click the ``Use Lineup Example'' button.
+The data status will then update to show the number of rows and columns
+in the dataset, and the CSV type will automatically be selected to the
+correct option. Since the example dataset follows the variable naming
 conventions assumed by the web application, the columns for fitted
 values, residuals, and labels of residual plots are set automatically
-(Figure~\ref{fig-autovi-web-workflow-example2}). If the user is working
-with a custom dataset, these options must be set accordingly. Regardless
-of the dataset, the user must manually select the label for the true
-residual plot, as the web application allows assessments without this
-label. The next step is to click the play button to start the
+(middle image). If the user is working with a custom dataset, these
+options must be set accordingly. Regardless of the dataset, the user
+must manually select the label for the true residual plot, whenever a
+lineup file is provided, as the web application allows assessments
+without this label. The last step is to click the play button (right
+image) to start the assessment.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-setup-1.png}
+
+}
+
+\caption{\label{fig-autovi-web-setup}To begin the workflow for
+\texttt{autovi} using the lineup example dataset, the user clicks the
+``Use Lineup Example'' button (left) to load the example dataset, during
+which the data status and CSV type will be automatically updated. The
+target columns are selected automatically, though the user must manually
+select the label for the true residual plot (middle), as the web
+application permits assessment without this label. The user initiates
+the assessment of the lineup example data by clicking the run button
+(right).}
+
+\end{figure}%
+
+\subsubsection{Results provided}\label{results-provided}
+
+Results are provided in multiple panels. The first row of the table
+Figure~\ref{fig-autovi-web-lineup} is the most crucial to check, as it
+provides the VSS and the rank of the true residual plot among the other
+plots. The summary text beneath the table provides the \(p\)-value,
+which can be used for quick decision-making. The lineup is for manual
+inspection, and the user should see if the true residual plot is
+visually distinguishable from the other plots, to confirm if the model
+violation is serious.
+
+The density plot in Figure~\ref{fig-autovi-web-distributions} offers a
+more robust result, allowing the user to compare the distribution of
+bootstrapped VSS with the distribution of null VSS. Finally, the
+grayscale attention map (right image) can be used to check if the target
+visual features, like the non-linearity present in the lineup example,
+are captured by the computer vision model, ensuring the quality of the
 assessment.
 
-Results are provided in multiple panels as displayed in
-Figure~\ref{fig-autovi-web-workflow-example3},
-Figure~\ref{fig-autovi-web-workflow-example4},
-Figure~\ref{fig-autovi-web-workflow-example5} and
-Figure~\ref{fig-autovi-web-workflow-example6}. In
-Figure~\ref{fig-autovi-web-workflow-example3}, the first row of the
-table is the most crucial to check, as it provides the VSS and the rank
-of the true residual plot among the other plots. The summary text
-beneath the table provides the \(p\)-value, which can be used for quick
-decision-making. In Figure~\ref{fig-autovi-web-workflow-example4}, the
-lineup is for manual inspection, and the user should see if the true
-residual plot is visually distinguishable from the other plots, to
-confirm if the model violation is serious. The density plot in
-Figure~\ref{fig-autovi-web-workflow-example5} offers a more robust
-result, allowing the user to compare the distribution of bootstrapped
-VSS with the distribution of null VSS. Finally, the grayscale attention
-map shown in Figure~\ref{fig-autovi-web-workflow-example6} can be used
-to check if the target visual features, like the non-linearity present
-in the lineup example, are captured by the computer vision model,
-ensuring the quality of the assessment.
-
 \begin{figure}
 
 \centering{
 
-\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example1-1.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-lineup-1.png}
 
 }
 
-\caption{\label{fig-autovi-web-workflow-example1}To begin the workflow
-for \texttt{autovi} using the lineup example dataset, the user clicks
-the ``Use Lineup Example'' button to load the example dataset, during
-which the data status and CSV type will be automatically updated.}
+\caption{\label{fig-autovi-web-lineup}Results for the lineup. The VSS of
+the true residual plot is displayed in the first row of the table of VSS
+values for all the null plots (left image), with a summary text beneath
+the table providing the \(p\)-value to aid in decision-making. A lineup
+of residual plots allows for manual inspection (right image).}
 
 \end{figure}%
 
@@ -1108,84 +872,14 @@ which the data status and CSV type will be automatically updated.}
 
 \centering{
 
-\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example2-1.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-distributions-1.png}
 
 }
 
-\caption{\label{fig-autovi-web-workflow-example2}After clicking the
-button in Figure~\ref{fig-autovi-web-workflow-example1}, the target
-columns are selected automatically, though the user must manually select
-the label for the true residual plot, as the web application permits
-assessment without this label.}
-
-\end{figure}%
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=0.55\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example3-1.png}
-
-}
-
-\caption{\label{fig-autovi-web-workflow-example3}After finishing the
-required steps in Figure~\ref{fig-autovi-web-workflow-example1} and
-Figure~\ref{fig-autovi-web-workflow-example2}, the user initiates the
-assessment of the lineup example data by clicking the run button.}
-
-\end{figure}%
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example4-1.png}
-
-}
-
-\caption{\label{fig-autovi-web-workflow-example4}The VSS of the true
-residual plot is displayed in the first row of the table, with a summary
-text beneath the table providing the \(p\)-value to aid in
-decision-making.}
-
-\end{figure}%
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example5-1.png}
-
-}
-
-\caption{\label{fig-autovi-web-workflow-example5}A lineup of residual
-plots allows for manual inspection.}
-
-\end{figure}%
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example6-1.png}
-
-}
-
-\caption{\label{fig-autovi-web-workflow-example6}The density plot helps
-verify if the bootstrapped distribution differs from the null
-distribution.}
-
-\end{figure}%
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-workflow-example7-1.png}
-
-}
-
-\caption{\label{fig-autovi-web-workflow-example7}The attention map
+\caption{\label{fig-autovi-web-distributions}Summaries assessing the
+strength of the pattern and which elements of the plot contribute. The
+density plot helps verify if the bootstrapped distribution differs from
+the null distribution (left image). The attention map (right image)
 offers insights into whether the computer vision model has captured the
 intended visual features of the true residual plot.}
 
