@@ -119,17 +119,15 @@ doublespace,
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
@@ -192,6 +190,9 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
 \usepackage[]{natbib}
 \bibliographystyle{anzsj}
 \usepackage{bookmark}
@@ -346,11 +347,11 @@ such as \texttt{nullabor} \citep{nullabor}, \texttt{HLMdiag}
 \citep{loy2014hlmdiag}, and \texttt{regressinator}
 \citep{regressinator}, enable users to compare observed residual plots
 with samples from null distributions, helping to quantify the
-significance of any detected patterns. However, the
+significance of any detected patterns.
 
 However, as discussed in \citet{li2024automated}, the lineup protocol
 has significant limitations in large-scale applications due dependence
-on human labor. Thus a computer vision model was developed with an
+on human labor. Thus, a computer vision model was developed with an
 associated statistical testing procedure to automate the assessment of
 residual plots. This model takes a residual plot and a vector of
 auxiliary variables (such as the number of observations) as inputs and
@@ -393,8 +394,8 @@ Figure~\ref{fig-three-examples} shows three sets of plots of residuals
 against fitted values. The simulated example in (a) might be interpreted
 as a heteroscedastic pattern, however the automated reading would
 predict this to have a visual signal strength (VSS) of 1.53, with a
-corresponding \(p\)-value of 0.25. This means it is would be interpreted
-as a good residual plot, that there is nothing in the data to indicate a
+corresponding \(p\)-value of 0.25. This means it would be interpreted as
+a good residual plot, that there is nothing in the data to indicate a
 violation of model assumptions. Skewness in the predictor variables is
 generating the apparent heteroscedasticity, where the smaller variance
 in residuals at larger fitted values is due to smaller sample size only.
@@ -426,7 +427,7 @@ non-normality.)
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-three-examples-1.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-three-examples-1.pdf}
 
 }
 
@@ -580,7 +581,7 @@ is either rejected or not, and help identify potential remedies.
 
 \centering{
 
-\includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
+\includegraphics[width=0.6\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
 
 }
 
@@ -610,7 +611,7 @@ result through the \texttt{summary\_plot()} function.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
 
 }
 
@@ -648,7 +649,7 @@ the automated analysis.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
 
 }
 
@@ -689,11 +690,11 @@ and resizing module is fixed but will adapt to different Keras models by
 checking their input shapes. The remaining seven modules are designed to
 be overridable, enabling users to tailor the infrastructure to their
 specific needs. These modules are discussed in detail on the software's
-website.
+website \url{https://tengmcing.github.io/autovi/}.
 
 \section{Web interface: autovi.web}\label{sec-autovi-web}
 
-The \texttt{autovi.web} package extends the functionality of
+The \texttt{autovi.web} shiny application extends the functionality of
 \texttt{autovi} by offering a user-friendly web interface for automated
 residual plot assessment. This eliminates the common challenges
 associated with software installation, so users can avoid managing
@@ -707,7 +708,7 @@ version 0.1.0.
 
 \subsection{Implementation}\label{implementation}
 
-The package \texttt{autovi.web} is built using the \texttt{shiny}
+The interface \texttt{autovi.web} is built using the \texttt{shiny}
 \citep{shiny} and \texttt{shinydashboard} \citep{shinydashboard} R
 packages. Hosted on the \href{https://www.shinyapps.io}{shinyapps.io}
 domain, the application is accessible through any modern web browser.
@@ -817,7 +818,7 @@ image) to start the assessment.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-setup-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-setup-1.png}
 
 }
 
@@ -856,7 +857,7 @@ assessment.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-lineup-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-lineup-1.png}
 
 }
 
@@ -872,7 +873,7 @@ of residual plots allows for manual inspection (right image).}
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-distributions-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-distributions-1.png}
 
 }
 
@@ -888,11 +889,11 @@ intended visual features of the true residual plot.}
 \section{Conclusions}\label{sec-autovi-conclusion}
 
 This paper presents new regression diagnostics software, the R package
-\texttt{autovi} and its accompanying web interface package,
-\texttt{autovi.web}. It addresses a critical gap in the current
-landscape of statistical software. While regression tools are widely
-available, effective and efficient diagnostic methods have lagged
-behind, particularly in the field of residual plot interpretation.
+\texttt{autovi} and its accompanying web interface, \texttt{autovi.web}.
+It addresses a critical gap in the current landscape of statistical
+software. While regression tools are widely available, effective and
+efficient diagnostic methods have lagged behind, particularly in the
+field of residual plot interpretation.
 
 The \texttt{autovi} R package, introduced in this paper, automates the
 assessment of residual plots by incorporating a computer vision model,
@@ -929,10 +930,11 @@ visual displays more broadly.
 \section{Resources and Supplementary
 Material}\label{resources-and-supplementary-material}
 
-The the current version of \texttt{autovi} can be installed from CRAN,
-and source code for both packages are available at
-\url{https://github.com/TengMCing/autovi}. The web interface is
-available from \url{autoviweb.netlify.app}.
+The current version of \texttt{autovi} can be installed from CRAN, and
+source code for both packages are available at
+\url{https://github.com/TengMCing/autovi} and
+\url{https://github.com/TengMCing/autovi_web} respectively. The web
+interface is available from \url{autoviweb.netlify.app}.
 
 These \texttt{R} packages were used for the work: \texttt{tidyverse}
 \citep{tidyverse}, \texttt{lmtest} \citep{lmtest}, \texttt{kableExtra}

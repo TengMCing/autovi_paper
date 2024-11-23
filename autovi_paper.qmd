@@ -276,7 +276,7 @@ The initial motivation for developing `autovi` was to create a convenient interf
 
 The infrastructure of `autovi` consists of ten core modules: data extraction, bootstrapping and model refitting, fitted values and residuals extraction, auxiliary computation, null residual simulation, plotting, plot saving, image reading and resizing, VSS prediction, and $p$-value computation. Each module is designed with minimal dependency on the preceding modules, allowing users to customize parts of the infrastructure without affecting its overall integrity. An overview of this infrastructure is illustrated in @fig-autovi-diag.
 
-The modules for VSS prediction and $p$-value computation are predefined and cannot be overridden, although users can interact with them directly through function arguments. Similarly, the image reading and resizing module is fixed but will adapt to different Keras models by checking their input shapes. The remaining seven modules are designed to be overridable, enabling users to tailor the infrastructure to their specific needs. These modules are discussed in detail on the software's website. <!-- in the following sections.-->
+The modules for VSS prediction and $p$-value computation are predefined and cannot be overridden, although users can interact with them directly through function arguments. Similarly, the image reading and resizing module is fixed but will adapt to different Keras models by checking their input shapes. The remaining seven modules are designed to be overridable, enabling users to tailor the infrastructure to their specific needs. These modules are discussed in detail on the software's website [https://tengmcing.github.io/autovi/](https://tengmcing.github.io/autovi/). <!-- in the following sections.-->
 
 <!--
 ### Initialization
@@ -633,12 +633,12 @@ The `get_keras_model()` function can be used to download a model to a temporary 
 
 # Web interface: autovi.web {#sec-autovi-web}
 
-The `autovi.web` package extends the functionality of `autovi` by offering a user-friendly web interface for automated residual plot assessment. This eliminates the common challenges associated with software installation, so users can avoid managing Python environments or handling version requirements for R libraries. The platform is cross-platform and accessible on various devices and operating systems, making it suitable even for users without R programming experience. Additionally, updates are managed centrally, ensuring that users always have access to the latest features.
+The `autovi.web` shiny application extends the functionality of `autovi` by offering a user-friendly web interface for automated residual plot assessment. This eliminates the common challenges associated with software installation, so users can avoid managing Python environments or handling version requirements for R libraries. The platform is cross-platform and accessible on various devices and operating systems, making it suitable even for users without R programming experience. Additionally, updates are managed centrally, ensuring that users always have access to the latest features.
 <!--The `autovi.web` interface is available at [autoviweb.netlify.app](autoviweb.netlify.app).--> This section discusses the implementation based on `autovi.web` version 0.1.0.
 
 ## Implementation
 
-The package `autovi.web` is built using the `shiny` [@shiny] and `shinydashboard` [@shinydashboard] R packages. Hosted on the [shinyapps.io](https://www.shinyapps.io) domain, the application is accessible through any modern web browser. The R packages `htmltools` [@htmltools] and `shinycssloaders` [@shinycssloaders] are used to render markdown documentation in shiny application, and for loading animations for shiny widgets, respectively.
+The interface `autovi.web` is built using the `shiny` [@shiny] and `shinydashboard` [@shinydashboard] R packages. Hosted on the [shinyapps.io](https://www.shinyapps.io) domain, the application is accessible through any modern web browser. The R packages `htmltools` [@htmltools] and `shinycssloaders` [@shinycssloaders] are used to render markdown documentation in shiny application, and for loading animations for shiny widgets, respectively.
 
 Determining the best way to implement the interface was difficult. In our initial planning for `autovi.web`, we considered implementing the entire web application using the `webr` framework [@webr], which would have allowed the entire application to run directly in the user's browser. However, this approach was not feasible at the time of writing this paper. The reason is that one of the R packages `autovi` depends on the R package `splancs` [@splancs], which uses compiled Fortran code. A working Emscripten [@zakai2011emscripten] version of this package, which would be required for `webr`, was not available.
 
@@ -764,7 +764,7 @@ magick::image_read_pdf("figures/autovi_web_workflow_7.pdf")
 
 # Conclusions {#sec-autovi-conclusion}
 
-This paper presents new regression diagnostics software, the R package `autovi` and its accompanying web interface package, `autovi.web`. It addresses a critical gap in the current landscape of statistical software. While regression tools are widely available, effective and efficient diagnostic methods have lagged behind, particularly in the field of residual plot interpretation.
+This paper presents new regression diagnostics software, the R package `autovi` and its accompanying web interface, `autovi.web`. It addresses a critical gap in the current landscape of statistical software. While regression tools are widely available, effective and efficient diagnostic methods have lagged behind, particularly in the field of residual plot interpretation.
 
 The `autovi` R package, introduced in this paper, automates the assessment of residual plots by incorporating a computer vision model, eliminating the need for time-consuming and potentially inconsistent human interpretation. This automation improves the efficiency of the diagnostic process and promotes consistency in model evaluation across different users and studies.
 
@@ -776,6 +776,6 @@ The framework established by `autovi` and `autovi.web` opens up exciting possibi
 
 # Resources and Supplementary Material
 
-The the current version of `autovi` can be installed from CRAN, and source code for both packages are available at [https://github.com/TengMCing/autovi](https://github.com/TengMCing/autovi). The web interface is available from [autoviweb.netlify.app](autoviweb.netlify.app). 
+The current version of `autovi` can be installed from CRAN, and source code for both packages are available at [https://github.com/TengMCing/autovi](https://github.com/TengMCing/autovi) and [https://github.com/TengMCing/autovi_web](https://github.com/TengMCing/autovi_web) respectively. The web interface is available from [autoviweb.netlify.app](autoviweb.netlify.app). 
 
 These `R` packages were used for the work: `tidyverse` [@tidyverse], `lmtest` [@lmtest], `kableExtra` [@kableextra], `patchwork` [@patchwork], `rcartocolor` [@rcartocolor], `glue` [@glue],  `here` [@here], `magick` [@magick], `yardstick` [@yardstick] and `reticulate` [@reticulate]. 
