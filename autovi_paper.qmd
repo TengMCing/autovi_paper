@@ -120,9 +120,9 @@ where $D_{KL}$ is given by:
 D_{KL} = \int_{\mathbb{R}^{n}}\log\frac{p(\boldsymbol{e})}{q(\boldsymbol{e})}p(\boldsymbol{e})d\boldsymbol{e},
 \end{equation*}
 
-Here, $p(.)$ and $q(.)$ are the probability density functions of the reference residual distribution $P$ and the true residual distribution $Q$, respectively.
+here, $p(.)$ and $q(.)$ are the probability density functions of the reference residual distribution $P$ and the true residual distribution $Q$, respectively.
 
-This distance measure requires knowledge of the true residuals' data generating process, which is typically unknown. Therefore, it must be estimated. To address this, a computer vision model was trained to perform the estimation.
+This distance measure requires knowledge of the true residual distribution, which is typically unknown. Therefore, a computer vision model was used for estimating the residual distribution [see @li2024automated for more details].
 
 
 # R package: autovi {#sec-autovi}
