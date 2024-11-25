@@ -173,6 +173,7 @@ doublespace,
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
+
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -210,6 +211,7 @@ learning, hypothesis testing, regression analysis, model diagnostics},
 
 \usepackage{lineno}
 \linenumbers
+
 
 \def\firstletters{\bgroup \catcode`-=10 \catcode`(=10 \filA}
 \def\filA#1{\filB#1 {\end} }
@@ -274,6 +276,7 @@ learning; hypothesis testing; regression analysis; model diagnostics}
           
 
 \maketitle
+
 
 \section{Introduction}\label{sec-autovi-introduction}
 
@@ -652,7 +655,7 @@ and resizing module is fixed but will adapt to different Keras models by
 checking their input shapes. The remaining seven modules are designed to
 be overridable, enabling users to tailor the infrastructure to their
 specific needs. These modules are discussed in detail on the software's
-website \url{https://tengmcing.github.io/autovi/}.
+website.
 
 \section{Web interface: autovi.web}\label{sec-autovi-web}
 
@@ -901,6 +904,12 @@ source code for both packages are available at
 \url{https://github.com/TengMCing/autovi_web} respectively. The web
 interface is available from \url{autoviweb.netlify.app}.
 
+This paper is reproducibly written using Quarto
+\citep{Allaire_Quarto_2024} powered by Pandoc version
+\citep{MacFarlane_Pandoc} and pdfTeX. The full source code to reproduce
+this paper is available at
+\url{https://github.com/TengMCing/autovi_paper}.
+
 These \texttt{R} packages were used for the work: \texttt{tidyverse}
 \citep{tidyverse}, \texttt{lmtest} \citep{lmtest}, \texttt{kableExtra}
 \citep{kableextra}, \texttt{patchwork} \citep{patchwork},
@@ -911,6 +920,7 @@ These \texttt{R} packages were used for the work: \texttt{tidyverse}
 
 
   \bibliography{bibliography.bib}
+
 
 
 \end{document}
