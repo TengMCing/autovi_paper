@@ -54,7 +54,7 @@ author:
 # says "abstract" the heading "Summary" will appear in
 # the processed version.
 abstract: |
-  Visually assessing residual plots is a common advice for linear model diagnostics, however this approach requires manual human evaluation and thereby is not scalable for assessing many models. Human evaluation also suffer from the potential for inconsistent decisions from different analysts. Using a lineup protocol, where the residual plot is embedded among null plots, can help to alleviate inconsistency, but requires even more human effort. This is the type of task that in today's world might employ a robot to do the tedious work for a human. Here we describe a new R package that includes a computer vision model for automated assessment of residual plots, and an accompanying Shiny app for ease of use. For a user-provided sample of residuals, it predicts a measure of visual signal strength (VSS) and provides a suite of supporting information to assist the analyst decide on the appropriateness their model fit. 
+  Visually assessing residual plots is a common advice for linear model diagnostics, however this approach requires manual human evaluation and thereby is not scalable for assessing many models. Human evaluation also suffer from the potential for inconsistent decisions from different analysts. Using a lineup protocol, where the residual plot is embedded among null plots, can help to alleviate inconsistency, but requires even more human effort. This is the type of task that in today's world might employ a robot to do the tedious work for a human. Here we describe a new R package that includes a computer vision model for automated assessment of residual plots, and an accompanying Shiny app for ease of use. For a user-provided sample of residuals, it predicts a measure of visual signal strength and provides a suite of supporting information to assist the analyst decide on the appropriateness their model fit. 
 # Note that "keywords" should not include words and phrases
 # that form part of the title of the paper.
 # Also keywords (with the exception of proper names and
@@ -104,9 +104,9 @@ The remainder of this paper is structured as follows: @sec-autovi provides a det
 
 # What is visual signal strength? {#sec-vss-desc}
 
-**Visual signal strength** (VSS) refers to how prominently a specific set of visual patterns appears in an image. In the context of regression model diagnostics, it describes the clarity of visual patterns on a diagnostic plot that may indicate model violations. This concept can be categorized as weak, moderate, or strong. However, in our study, we treat it as a continuous positive real variable. Importantly, its interpretation depends on how it is linked to a function of the data or the underlying data generating process. Consequently, the meaning of visual signal strength varies across different model classes and even within the same model, depending on the chosen function.
+Visual signal strength (VSS) refers to how prominently a specific set of visual patterns appears in an image. In the context of regression model diagnostics, it describes the clarity of visual patterns on a diagnostic plot that may indicate model violations. This concept can be categorized as weak, moderate, or strong. However, in our study, we treat it as a continuous positive real variable. Importantly, its interpretation depends on how it is linked to a function of the data or the underlying data generating process. Consequently, the meaning of visual signal strength varies across different model classes and even within the same model, depending on the chosen function.
 
-In @li2024automated, visual signal strength was defined as an estimate of a distance measure that quantifies the disparity between the residual distribution of a fitted classical normal linear regression model and a reference distribution. This measure is based on the Kullback-Leibler (KL) divergence:
+In @li2024automated, VSS was defined as an estimate of a distance measure that quantifies the disparity between the residual distribution of a fitted classical normal linear regression model and a reference distribution. This measure is based on the Kullback-Leibler (KL) divergence:
 
 \begin{equation*} \label{eq:kl-0}
 D = \log\left(1 + D_{KL}\right),
@@ -118,9 +118,9 @@ where $D_{KL}$ is given by:
 D_{KL} = \int_{\mathbb{R}^{n}}\log\frac{p(\boldsymbol{e})}{q(\boldsymbol{e})}p(\boldsymbol{e})d\boldsymbol{e},
 \end{equation*}
 
-Here, $p(.)$ and $q(.)$ are the probability density functions of the reference residual distribution $P$ and the true residual distribution $Q$, respectively.
+here, $p(.)$ and $q(.)$ are the probability density functions of the reference residual distribution $P$ and the true residual distribution $Q$, respectively.
 
-This distance measure requires knowledge of the true residuals' data generating process, which is typically unknown. Therefore, it must be estimated. To address this, a computer vision model was trained to perform the estimation.
+This distance measure requires knowledge of the true residual distribution, which is typically unknown. Therefore, a computer vision model was used for estimating the residual distribution [see @li2024automated for more details].
 
 
 # R package: autovi {#sec-autovi}
