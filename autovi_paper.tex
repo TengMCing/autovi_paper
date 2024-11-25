@@ -119,17 +119,15 @@ doublespace,
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
@@ -175,7 +173,9 @@ doublespace,
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
 \usepackage[]{natbib}
 \bibliographystyle{anzsj}
 \usepackage{bookmark}
@@ -210,7 +210,6 @@ learning, hypothesis testing, regression analysis, model diagnostics},
 
 \usepackage{lineno}
 \linenumbers
-
 
 \def\firstletters{\bgroup \catcode`-=10 \catcode`(=10 \filA}
 \def\filA#1{\filB#1 {\end} }
@@ -275,7 +274,6 @@ learning; hypothesis testing; regression analysis; model diagnostics}
           
 
 \maketitle
-
 
 \section{Introduction}\label{sec-autovi-introduction}
 
@@ -434,7 +432,7 @@ non-normality.)
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-three-examples-1.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-three-examples-1.pdf}
 
 }
 
@@ -588,7 +586,7 @@ is either rejected or not, and help identify potential remedies.
 
 \centering{
 
-\includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
+\includegraphics[width=0.6\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
 
 }
 
@@ -618,7 +616,7 @@ result through the \texttt{summary\_plot()} function.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
 
 }
 
@@ -656,7 +654,7 @@ the automated analysis.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
 
 }
 
@@ -830,7 +828,7 @@ start the assessment.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-setup-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-setup-1.png}
 
 }
 
@@ -867,7 +865,7 @@ assessment.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-lineup-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-lineup-1.png}
 
 }
 
@@ -883,7 +881,7 @@ of residual plots allows for manual inspection (right image).}
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-distributions-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-distributions-1.png}
 
 }
 
@@ -942,15 +940,16 @@ material}\label{resources-and-supplementary-material}
 
 The current version of \texttt{autovi} can be installed from CRAN, and
 source code for both packages are available at
-\url{https://github.com/TengMCing/autovi} and
-\url{https://github.com/TengMCing/autovi_web} respectively. The web
-interface is available from \url{autoviweb.netlify.app}.
+\href{https://github.com/TengMCing/autovi}{\texttt{github.com/TengMCing/autovi}}
+and
+\href{https://github.com/TengMCing/autovi_web}{\texttt{github.com/TengMCing/autovi\_web}}
+respectively. The web interface is available from
+\href{https://autoviweb.netlify.app/}{\texttt{autoviweb.netlify.app}}.
 
 This paper is reproducibly written using Quarto
-\citep{Allaire_Quarto_2024} powered by Pandoc version
-\citep{MacFarlane_Pandoc} and pdfTeX. The full source code to reproduce
-this paper is available at
-\url{https://github.com/TengMCing/autovi_paper}.
+\citep{Allaire_Quarto_2024} powered by Pandoc \citep{MacFarlane_Pandoc}
+and pdfTeX. The full source code to reproduce this paper is available at
+\href{https://github.com/TengMCing/autovi_paper}{\texttt{github.com/TengMCing/autovi\_paper}}.
 
 These \texttt{R} packages were used for the work: \texttt{tidyverse}
 \citep{tidyverse}, \texttt{lmtest} \citep{lmtest}, \texttt{kableExtra}
@@ -962,7 +961,6 @@ These \texttt{R} packages were used for the work: \texttt{tidyverse}
 
 
   \bibliography{bibliography.bib}
-
 
 
 \end{document}
