@@ -339,6 +339,44 @@ interface, describing its design and usage, along with illustrative
 examples. Finally, Section~\ref{sec-autovi-conclusion} presents the main
 conclusions of this work.
 
+\section{What is visual signal strength?}\label{sec-vss-desc}
+
+\textbf{Visual signal strength} (VSS) refers to how prominently a
+specific set of visual patterns appears in an image. In the context of
+regression model diagnostics, it describes the clarity of visual
+patterns on a diagnostic plot that may indicate model violations. This
+concept can be categorized as weak, moderate, or strong. However, in our
+study, we treat it as a continuous positive real variable. Importantly,
+its interpretation depends on how it is linked to a function of the data
+or the underlying data generating process. Consequently, the meaning of
+visual signal strength varies across different model classes and even
+within the same model, depending on the chosen function.
+
+In \citet{li2024automated}, visual signal strength was defined as an
+estimate of a distance measure that quantifies the disparity between the
+residual distribution of a fitted classical normal linear regression
+model and a reference distribution. This measure is based on the
+Kullback-Leibler (KL) divergence:
+
+\begin{equation*} \label{eq:kl-0}
+D = \log\left(1 + D_{KL}\right),
+\end{equation*}
+
+where \(D_{KL}\) is given by:
+
+\begin{equation*} \label{eq:kl-1}
+D_{KL} = \int_{\mathbb{R}^{n}}\log\frac{p(\boldsymbol{e})}{q(\boldsymbol{e})}p(\boldsymbol{e})d\boldsymbol{e},
+\end{equation*}
+
+Here, \(p(.)\) and \(q(.)\) are the probability density functions of the
+reference residual distribution \(P\) and the true residual distribution
+\(Q\), respectively.
+
+This distance measure requires knowledge of the true residuals' data
+generating process, which is typically unknown. Therefore, it must be
+estimated. To address this, a computer vision model was trained to
+perform the estimation.
+
 \section{R package: autovi}\label{sec-autovi}
 
 The main purpose of \texttt{autovi} is to provide rejection decisions
@@ -459,7 +497,7 @@ installation problems.
 
 \subsection{Usage}\label{sec-autovi-usage}
 
-\subsubsection{Numerical Summary}\label{sec-autovi-numerical}
+\subsubsection{Numerical summary}\label{sec-autovi-numerical}
 
 Three steps are needed to get an automated assessment of a set of
 residuals and fitted values:
@@ -529,7 +567,7 @@ likelihood of model violations. The likelihood is computed from the
 proportion of values greater than the observed VSS in both the
 bootstrapped data values and the simulated null values.
 
-\subsubsection{Visual Summary}\label{sec-autovi-visual}
+\subsubsection{Visual summary}\label{sec-autovi-visual}
 
 Users can visually inspect the original residual plot alongside a sample
 null plot using \texttt{plot\_pair()} or a lineup of null plot
@@ -608,7 +646,7 @@ This visual summary provides an intuitive way to assess the model's fit
 and potential violations, allowing users to quickly grasp the results of
 the automated analysis.
 
-\subsection{Modularized Infrastructure}\label{sec-autovi-infrastructure}
+\subsection{Modularized infrastructure}\label{sec-autovi-infrastructure}
 
 \begin{figure}
 
@@ -895,8 +933,8 @@ techniques to other types of diagnostic plots and statistical models,
 potentially revolutionizing how we approach statistical inference using
 visual displays more broadly.
 
-\section{Resources and Supplementary
-Material}\label{resources-and-supplementary-material}
+\section{Resources and supplementary
+material}\label{resources-and-supplementary-material}
 
 The current version of \texttt{autovi} can be installed from CRAN, and
 source code for both packages are available at
