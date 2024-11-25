@@ -131,22 +131,6 @@ doublespace,
 \def\fps@figure{htbp}
 \makeatother
 
-% The following \newcommands are intended for use in the *current*
-% document ("protoType"). It is unlikely that authors of papers submitted
-% to the Journal will need them.  (Of course if it turns out that you
-% do indeed need them, then by all means feel free to make use of them.)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{lipsum}
-
-\newcommand\BibTeX{{\rmfamily B\kern-.05em \textsc{i\kern-.025em b}\kern-.08em
-T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
-\newcommand\MiKTeX{{\rmfamily M\kern-.05em \textsc{i\kern-.025em K}\kern-.08em
-T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
-\newcommand\PracTeX{{\rmfamily P\kern-.05em \textsc{r\kern-.025em a\kern-.025em
-c}\kern-.08em
-T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \usepackage{pmboxdraw}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
@@ -189,7 +173,6 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -204,7 +187,7 @@ T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
   pdfauthor={Weihao Li; Dianne Cook; Emi Tanaka; Susan VanderPlas; Klaus Ackermann},
   pdfkeywords={initial data analysis, statistical graphics, data
 visualization, visual inference, computer vision, machine
-learning, hypothesis testing, regression analysis},
+learning, hypothesis testing, regression analysis, model diagnostics},
   colorlinks=true,
   linkcolor={blue},
   filecolor={Maroon},
@@ -228,7 +211,6 @@ learning, hypothesis testing, regression analysis},
 \usepackage{lineno}
 \linenumbers
 
-
 \def\firstletters{\bgroup \catcode`-=10 \catcode`(=10 \filA}
 \def\filA#1{\filB#1 {\end} }
 \def\filB#1#2 {\ifx\end#1\egroup \else#1 \expandafter\filB\fi}
@@ -241,21 +223,13 @@ Automated Residual Plot Assessment
 
 \title{Automated Residual Plot Assessment with the R Package autovi and
 Shiny App autovi.web}
-\usepackage{etoolbox}
-\makeatletter
-\providecommand{\subtitle}[1]{% add subtitle to \maketitle
-  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
-}
-\makeatother
-\subtitle{ANZJS Quarto Template}
 
 \author{
 Weihao Li\addressnum{1},
 Dianne Cook\addressnum{1},
 Emi Tanaka\addressnum{2},
 Susan VanderPlas\addressnum{3} and
-Klaus Ackermann
-\addressnum{1}
+Klaus Ackermann\addressnum{1}
 }
 \affiliation{
 Monash University,
@@ -278,46 +252,34 @@ Hall, 3310 Holdrege St Suite 340, Lincoln, NE 68583, United States\\
 \begin{document}
 
 \begin{abstract}
-Regression software is widely available, and there are many tools for
-generating diagnostics and computing conventional residual tests.
-However, the advice remains that the analyst should look at the residual
-plot to check the fit. Perhaps, one of the reasons is that conventional
-tests are too sensitive, strictly resulting in adequate models being
-abandoned. Visually assess the strength of patterns in residual plots
-requires human effort and suffers from the potential for inconsistent
-decisions from different analysts. Using a lineup protocol, where the
-residual plot is embedded among null plots, can help to alleviate
-inconsistency, but requires even more human effort. This is the type of
-task that in today's world might employ a robot to do the tedious work
-for a human. Here we describe a new R package that includes a computer
-vision model for automated assessment of residual plots, and an
-accompanying Shiny app for ease of use. For a user-provided sample of
-residuals, it predicts a measure of visual signal strength (VSS) and
-provides a suite of supporting information to assist the analyst decide
-on the appropriateness their model fit.
+Visually assessing residual plots is a common advice for linear model
+diagnostics, however this approach requires manual human evaluation and
+thereby is not scalable for assessing many models. Human evaluation also
+suffer from the potential for inconsistent decisions from different
+analysts. Using a lineup protocol, where the residual plot is embedded
+among null plots, can help to alleviate inconsistency, but requires even
+more human effort. This is the type of task that in today's world might
+employ a robot to do the tedious work for a human. Here we describe a
+new R package that includes a computer vision model for automated
+assessment of residual plots, and an accompanying Shiny app for ease of
+use. For a user-provided sample of residuals, it predicts a measure of
+visual signal strength (VSS) and provides a suite of supporting
+information to assist the analyst decide on the appropriateness their
+model fit.
 \end{abstract}
 
 \keywords{initial data analysis; statistical graphics; data
 visualization; visual inference; computer vision; machine
-learning; hypothesis testing; regression analysis}
+learning; hypothesis testing; regression analysis; model diagnostics}
           
-\ack{The author acknowledges that this template is based on the latex
-template for Australian and New Zealand Journal of Statistics and
-intersperses some text from the original prototype document.
-\newline\vspace{1ex}\newline Opinions and attitudes expressed in this
-document, which are not explicitly designated as Journal policy, are
-those of the author and are \emph{not} necessarily endorsed by the
-Journal, its editorial board, its publisher Wiley or by the Australian
-Statistical Publishing Association Inc.}
 
 \maketitle
 
-
 \section{Introduction}\label{sec-autovi-introduction}
 
-Regression analysis is a widely used statistical modeling technique
-widely for data in many fields. There are a vast array of software for
-conducting regression modeling and generating diagnostics. The package
+Regression analysis is a widely used statistical modeling technique for
+data in many fields. There are a vast array of software for conducting
+regression modeling and generating diagnostics. The package
 \texttt{lmtest} \citep{lmtest} provides a suite of conventional tests.
 The \texttt{stats} package \citep{stats} offers standard diagnostic
 plots such as residuals vs.~fitted values, quantile-quantile (Q-Q)
@@ -350,15 +312,15 @@ with samples from null distributions, helping to quantify the
 significance of any detected patterns.
 
 However, as discussed in \citet{li2024automated}, the lineup protocol
-has significant limitations in large-scale applications due dependence
-on human labor. Thus, a computer vision model was developed with an
-associated statistical testing procedure to automate the assessment of
-residual plots. This model takes a residual plot and a vector of
-auxiliary variables (such as the number of observations) as inputs and
-outputs the predicted visual signal strength (VSS). This strength
-estimates the distance between the residual distribution of the fitted
-regression model and the reference distribution assumed under correct
-model specification.
+has significant limitations in large-scale applications due to
+dependence on human labor. Thus, a computer vision model was developed
+with an associated statistical testing procedure to automate the
+assessment of residual plots. This model takes a residual plot and a
+vector of auxiliary variables (such as the number of observations) as
+inputs and outputs the predicted visual signal strength (VSS). This
+strength estimates the distance between the residual distribution of the
+fitted regression model and the reference distribution assumed under
+correct model specification.
 
 To make the statistical testing procedure and trained computer vision
 model widely accessible, we developed the R package \texttt{autovi}, and
@@ -388,7 +350,7 @@ web interface, \texttt{autovi.web}. The web interface has the advantage
 that it can be used without installing Python, R and the relevant
 packages locally.
 
-\subsection{Why use it}\label{sec-why}
+\subsection{Motivation for usage}\label{sec-why}
 
 Figure~\ref{fig-three-examples} shows three sets of plots of residuals
 against fitted values. The simulated example in (a) might be interpreted
@@ -432,13 +394,13 @@ non-normality.)
 }
 
 \caption{\label{fig-three-examples}Reading residual plots can be a
-difficult task, particular for students new to statistical modeling. The
-autovi package makes it easier. Here are three examples of residual
-plots, which may appear to have structure. According to autovi, the
-visual signal strengths (VSS) of these three examples are approximately
-(a) 1.53, (b) 3.57, (c) 5.87, resulting in (b), (c) being significant
-violations of good residuals, but (a) is consistent with a good residual
-plot.}
+difficult task, particularly for students new to statistical modeling.
+The \texttt{autovi} package makes it easier. Here are three examples of
+residual plots, which may appear to have structure. According to autovi,
+the visual signal strengths (VSS) of these three examples are
+approximately (a) 1.53, (b) 3.57, (c) 5.87, resulting in (b), (c) being
+significant violations of good residuals, but (a) is consistent with a
+good residual plot.}
 
 \end{figure}%
 
@@ -489,7 +451,7 @@ will be raised. If you want to select a specific Python environment, you
 can do so by calling the \texttt{reticulate::use\_python()} function
 before using the \texttt{autovi} package.
 
-We recommend using the Shiny app \texttt{autovi.web} if encountering
+We recommend using the Shiny app \texttt{autovi.web} if users encounter
 installation problems.
 
 \subsection{Usage}\label{sec-autovi-usage}
@@ -654,11 +616,11 @@ the automated analysis.
 }
 
 \caption{\label{fig-autovi-diag}Diagram illustrating the infrastructure
-of the R package autovi. The modules in green are primary inputs
-provided by users. Modules in blue are overridable methods that can be
-modified to accommodate users' specific needs. The module in yellow is a
-pre-defined non-overridable method. The modules in red are primary
-outputs of the package.}
+of the R package \texttt{autovi}. The modules in green are primary
+inputs provided by users. Modules in blue are overridable methods that
+can be modified to accommodate users' specific needs. The module in
+yellow is a pre-defined non-overridable method. The modules in red are
+primary outputs of the package.}
 
 \end{figure}%
 
@@ -667,8 +629,8 @@ convenient interface for sharing the models described and trained in
 \citet{li2024automated}. However, recognizing that the classical normal
 linear regression model represents a restricted class of models, we
 sought to avoid limiting the potential for future extensions, whether by
-the original developers or other users. As a result, the package was
-designed to function seamlessly with linear regression models with
+the original developers or other developers. As a result, the package
+was designed to function seamlessly with linear regression models with
 minimal modification and few required arguments, while also
 accommodating other classes of models through partial infrastructure
 substitution. This modular and customizable design allows
@@ -717,13 +679,13 @@ The R packages \texttt{htmltools} \citep{htmltools} and
 markdown documentation in shiny application, and for loading animations
 for shiny widgets, respectively.
 
-Determining the best way to implement the interface was difficult. In
-our initial planning for \texttt{autovi.web}, we considered implementing
-the entire web application using the \texttt{webr} framework
-\citep{webr}, which would have allowed the entire application to run
-directly in the user's browser. However, this approach was not feasible
-at the time of writing this paper. The reason is that one of the R
-packages \texttt{autovi} depends on the R package \texttt{splancs}
+Determining the best way to implement the backend was difficult. In our
+initial planning for \texttt{autovi.web}, we considered implementing the
+entire web application using the \texttt{webr} framework \citep{webr},
+which would have allowed the entire application to run directly in the
+user's browser. However, this approach was not feasible at the time of
+writing this paper. The reason is that one of the R packages
+\texttt{autovi} depends on the R package \texttt{splancs}
 \citep{splancs}, which uses compiled Fortran code. A working Emscripten
 \citep{zakai2011emscripten} version of this package, which would be
 required for \texttt{webr}, was not available.
@@ -745,7 +707,7 @@ community and offer a solid foundation for web application development.
 
 The server-side configuration of \texttt{autovi.web} is carefully
 designed to support its functionality. Most required Python libraries,
-including \texttt{pillow} and \texttt{NumPy}, are pre-installed on the
+including \texttt{pillow} and \texttt{numpy}, are pre-installed on the
 server. These libraries are integrated into the Shiny application using
 the \texttt{reticulate} package, which provides an interface between R
 and Python.
@@ -766,7 +728,7 @@ native browser execution, enhancing compatibility across different user
 environments, and shifts the computational load from the server to the
 client-side. \texttt{TensorFlow.js} also offers better scalability and
 performance, especially when dealing with resource-intensive computer
-vision models on shinyapps.io.
+vision models on the web.
 
 While \texttt{autovi} requires downloading the pre-trained computer
 vision models from GitHub, these models in ``.keras'' file format are
@@ -777,12 +739,12 @@ resources in the Shiny application. When the application initializes,
 pre-stored weights.
 
 To allow communication between \texttt{TensorFlow.js} and other
-components of the Shiny application, the \texttt{shinyjs} R package is
-used. This package allows calling custom JavaScript code within the
-Shiny framework. The specialized JavaScript code for initializing
-\texttt{TensorFlow.js} and calling \texttt{TensorFlow.js} for VSS
-prediction is deployed alongside the Shiny application as additional
-resources.
+components of the Shiny application, the \texttt{shinyjs} R package
+\citep{shinyjs} is used. This package allows calling custom JavaScript
+code within the Shiny framework. The specialized JavaScript code for
+initializing \texttt{TensorFlow.js} and calling \texttt{TensorFlow.js}
+for VSS prediction is deployed alongside the Shiny application as
+additional resources.
 
 \subsection{Usage}\label{sec-autovi-web-workflow}
 
@@ -792,27 +754,32 @@ datasets provided by the web application. The single residual plot
 example uses the \texttt{dino} dataset from the R package
 \texttt{datasauRus} \citep{datasaurus}. The lineup example uses
 residuals from a simulated regression model that has a non-linearity
-issue. We will walk through the lineup example to further demonstrate
-the workflow of the web application.
+issue. We walk through the lineup example to further demonstrate the
+workflow of the web application.
 
 \subsubsection{Reading data and setting
 parameters}\label{reading-data-and-setting-parameters}
 
 The user can select to upload data as either a single set of residuals
-or a pre-computed lineup of residuals and nulls. Here we illustrate use
-with lineup example data sets (Figure~\ref{fig-autovi-web-setup}). To
-use the lineup example data, click the ``Use Lineup Example'' button.
-The data status will then update to show the number of rows and columns
-in the dataset, and the CSV type will automatically be selected to the
-correct option. Since the example dataset follows the variable naming
-conventions assumed by the web application, the columns for fitted
-values, residuals, and labels of residual plots are set automatically
-(middle image). If the user is working with a custom dataset, these
-options must be set accordingly. Regardless of the dataset, the user
-must manually select the label for the true residual plot, whenever a
-lineup file is provided, as the web application allows assessments
-without this label. The last step is to click the play button (right
-image) to start the assessment.
+and fitted values in a two (or more) column CSV file or a pre-computed
+lineup of residuals and null datasets in a three (or more) column CSV
+file (i.e.~multiple sets of residuals and fitted values with a column
+indicating the set label). Here we illustrate use with lineup example
+data sets (Figure~\ref{fig-autovi-web-setup}). To use the lineup example
+data, click the ``Use Lineup Example'' button. The data status will then
+update to show the number of rows and columns in the dataset, and the
+CSV type will automatically be selected to the correct option. Since the
+example dataset follows the variable naming conventions assumed by the
+web application, the columns for fitted values, residuals, and labels of
+residual plots are automatically mapped such that the column named as
+\texttt{.fitted} is mapped to fitted values, \texttt{.resid} is mapped
+to residuals and if applicable, \texttt{.sample} to labels of the
+residual set (middle image). If the user is working with a custom
+dataset, these options must be set accordingly. Whenever a data
+containing a lineup, the user must manually select the label for the
+true residual plot, otherwise the web application does not provide all
+the results. The last step is to click the play button (right image) to
+start the assessment.
 
 \begin{figure}
 
@@ -826,11 +793,9 @@ image) to start the assessment.
 \texttt{autovi} using the lineup example dataset, the user clicks the
 ``Use Lineup Example'' button (left) to load the example dataset, during
 which the data status and CSV type will be automatically updated. The
-target columns are selected automatically, though the user must manually
-select the label for the true residual plot (middle), as the web
-application permits assessment without this label. The user initiates
-the assessment of the lineup example data by clicking the run button
-(right).}
+user must manually select the label for the true residual plot (middle)
+to compute further results. The user initiates the assessment of the
+lineup example data by clicking the run button (right).}
 
 \end{figure}%
 
@@ -946,7 +911,6 @@ These \texttt{R} packages were used for the work: \texttt{tidyverse}
 
 
   \bibliography{bibliography.bib}
-
 
 
 \end{document}
