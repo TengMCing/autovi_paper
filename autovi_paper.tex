@@ -119,15 +119,17 @@ doublespace,
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
@@ -174,9 +176,6 @@ doublespace,
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
 \usepackage[]{natbib}
 \bibliographystyle{anzsj}
 \usepackage{bookmark}
@@ -184,7 +183,7 @@ doublespace,
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
-  pdftitle={Automated Residual Plot Assessment with the R Package autovi and Shiny App autovi.web},
+  pdftitle={Automated Residual Plot Assessment with the R Package autovi and the Shiny App autovi.web},
   pdfauthor={Weihao Li; Dianne Cook; Emi Tanaka; Susan VanderPlas; Klaus Ackermann},
   pdfkeywords={initial data analysis, statistical graphics, data
 visualization, visual inference, computer vision, machine
@@ -224,7 +223,7 @@ Automated Residual Plot Assessment
 }
 
 \title{Automated Residual Plot Assessment with the R Package autovi and
-Shiny App autovi.web}
+the Shiny App autovi.web}
 
 \author{
 Weihao Li\addressnum{1},
@@ -257,17 +256,17 @@ Hall, 3310 Holdrege St Suite 340, Lincoln, NE 68583, United States\\
 Visually assessing residual plots is a common advice for linear model
 diagnostics, however this approach requires manual human evaluation and
 thereby is not scalable for assessing many models. Human evaluation also
-suffer from the potential for inconsistent decisions from different
+has the potential to produce inconsistent decisions from different
 analysts. Using a lineup protocol, where the residual plot is embedded
 among null plots, can help to alleviate inconsistency, but requires even
-more human effort. This is the type of task that in today's world might
-employ a robot to do the tedious work for a human. Here we describe a
-new R package that includes a computer vision model for automated
-assessment of residual plots, and an accompanying Shiny app for ease of
-use. For a user-provided sample of residuals, it predicts a measure of
-visual signal strength (VSS) and provides a suite of supporting
-information to assist the analyst decide on the appropriateness their
-model fit.
+more human effort. This is the type of task that in today's world we
+might employ a robot to do the tedious work for a human. Here we
+describe a new R package that includes a computer vision model for
+automated assessment of residual plots, and an accompanying Shiny app
+for ease of use. For a user-provided sample of residuals, it predicts a
+measure of visual signal strength (VSS) and provides a suite of
+supporting information to assist the analyst decide on the
+appropriateness their model fit.
 \end{abstract}
 
 \keywords{initial data analysis; statistical graphics; data
@@ -281,7 +280,7 @@ learning; hypothesis testing; regression analysis; model diagnostics}
 \section{Introduction}\label{sec-autovi-introduction}
 
 Regression analysis is a widely used statistical modeling technique for
-data in many fields. There are a vast array of software for conducting
+data in many fields. There is a vast array of software for conducting
 regression modeling and generating diagnostics. The package
 \texttt{lmtest} \citep{lmtest} provides a suite of conventional tests.
 The \texttt{stats} package \citep{stats} offers standard diagnostic
@@ -302,8 +301,8 @@ issues specific to generalized linear and mixed-effect models, like
 over/under-dispersion. It also includes conventional test annotations to
 help avoid misinterpretation.
 
-However relying solely on subjective assessments of these plots can lead
-to issues, such as over-interpreting random patterns as model
+However, relying solely on subjective assessments of these plots can
+lead to issues such as over-interpreting random patterns as model
 violations. \citet{li2024plot} demonstrated that visual methods using
 the lineup protocol \citep{buja2009statistical} for assessing residuals
 are more useful, and also perform more practically than conventional
@@ -311,7 +310,7 @@ tests due to their reduced sensitivity to minor departures. Packages
 such as \texttt{nullabor} \citep{nullabor}, \texttt{HLMdiag}
 \citep{loy2014hlmdiag}, and \texttt{regressinator}
 \citep{regressinator}, enable users to compare observed residual plots
-with samples from null distributions, helping to quantify the
+with plots of samples from null distributions, helping to quantify the
 significance of any detected patterns.
 
 However, as discussed in \citet{li2024automated}, the lineup protocol
@@ -339,23 +338,28 @@ interface, describing its design and usage, along with illustrative
 examples. Finally, Section~\ref{sec-autovi-conclusion} presents the main
 conclusions of this work.
 
-\section{What is visual signal strength?}\label{sec-vss-desc}
+\section{Definition and computation of visual signal
+strength}\label{sec-vss-desc}
 
-\textbf{Visual signal strength} (VSS) refers to how prominently a
-specific set of visual patterns appears in an image. In the context of
-regression model diagnostics, it describes the clarity of visual
-patterns on a diagnostic plot that may indicate model violations. This
-concept can be categorized as weak, moderate, or strong. However, in our
-study, we treat it as a continuous positive real variable. Importantly,
-its interpretation depends on how it is linked to a function of the data
-or the underlying data generating process. Consequently, the meaning of
-visual signal strength varies across different model classes and even
-within the same model, depending on the chosen function.
+To train a computer vision model a measure of the visible pattern in a
+plot is needed. We call this the \textbf{visual signal strength} (VSS)
+measuring how prominently a specific set of visual patterns appears in
+an image. This can be computed for a training set of data, and plots,
+where the generating distributions are specified.
 
-In \citet{li2024automated}, visual signal strength was defined as an
-estimate of a distance measure that quantifies the disparity between the
-residual distribution of a fitted classical normal linear regression
-model and a reference distribution. This measure is based on the
+In the context of regression model diagnostics, it describes the clarity
+of visual patterns on a diagnostic plot that may indicate model
+violations. This concept can be categorized as weak, moderate, or
+strong. However, in our study, we treat it as a continuous positive real
+variable. Importantly, its interpretation depends on how it is linked to
+a function of the data or the underlying data generating process.
+Consequently, the calculation of VSS can be vary across different model
+classes or within the same model, depending on the generating function.
+
+VSS is defined as an estimate of a distance measure that quantifies the
+disparity between the residual distribution of a fitted classical normal
+linear regression model and a reference distribution, and more details
+can be found in \citet{li2024automated}. This measure is based on the
 Kullback-Leibler (KL) divergence:
 
 \begin{equation*} \label{eq:kl-0}
@@ -430,7 +434,7 @@ non-normality.)
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-three-examples-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-three-examples-1.pdf}
 
 }
 
@@ -584,7 +588,7 @@ is either rejected or not, and help identify potential remedies.
 
 \centering{
 
-\includegraphics[width=0.6\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
+\includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
 
 }
 
@@ -614,7 +618,7 @@ result through the \texttt{summary\_plot()} function.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
 
 }
 
@@ -652,7 +656,7 @@ the automated analysis.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
 
 }
 
@@ -826,7 +830,7 @@ start the assessment.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-setup-1.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-setup-1.png}
 
 }
 
@@ -863,7 +867,7 @@ assessment.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-lineup-1.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-lineup-1.png}
 
 }
 
@@ -879,7 +883,7 @@ of residual plots allows for manual inspection (right image).}
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-distributions-1.png}
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-distributions-1.png}
 
 }
 
