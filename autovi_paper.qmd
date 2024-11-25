@@ -765,6 +765,8 @@ The framework established by `autovi` and `autovi.web` opens up exciting possibi
 
 # Resources and Supplementary Material
 
-The the current version of `autovi` can be installed from CRAN, and source code for both packages are available at [https://github.com/TengMCing/autovi](https://github.com/TengMCing/autovi). The web interface is available from [autoviweb.netlify.app](autoviweb.netlify.app). 
+The the current version of `autovi` can be installed from CRAN, and source code for both packages are available at [https://github.com/TengMCing/autovi](https://github.com/TengMCing/autovi). The web interface is available from [autoviweb.netlify.app](autoviweb.netlify.app).
+
+This paper is reproducibly written using Quarto [@Allaire_Quarto_2024] powered by Pandoc version [@MacFarlane_Pandoc] and pdfTeX. The full source code to reproduce this paper is available at <https://github.com/TengMCing/autovi_paper>.
 
 These `R` packages were used for the work: `tidyverse` [@tidyverse], `lmtest` [@lmtest], `kableExtra` [@kableextra], `patchwork` [@patchwork], `rcartocolor` [@rcartocolor], `glue` [@glue],  `here` [@here], `magick` [@magick], `yardstick` [@yardstick] and `reticulate` [@reticulate]. 
