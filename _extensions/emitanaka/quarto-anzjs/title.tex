@@ -32,8 +32,7 @@ $by-author.name.literal$\addressnum{$for(by-author.affiliations)$$it.number$$sep
 $endfor$
  and
 $for(by-author/last)$
-$by-author.name.literal$
-\addressnum{$for(by-author.affiliations)$$it.number$$sep$, $endfor$}$if(by-author.attributes.corresponding)$\corrauth$endif$
+$by-author.name.literal$\addressnum{$for(by-author.affiliations)$$it.number$$sep$, $endfor$}$if(by-author.attributes.corresponding)$\corrauth$endif$
 $endfor$
 $else$
 $for(authors)$
