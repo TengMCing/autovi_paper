@@ -122,6 +122,8 @@ D_{KL} = \int_{\mathbb{R}^{n}}\log\frac{p(\boldsymbol{e})}{q(\boldsymbol{e})}p(\
 here, $p(.)$ and $q(.)$ are the probability density functions of the reference residual distribution $P$ and the true residual distribution $Q$, respectively.
 
 This distance measure requires knowledge of the true residual distribution, which is typically unknown. Therefore, a computer vision model was used for estimating the residual distribution [see @li2024automated for more details].
+XXX this isn't completely clear -- why is the computer vision model used to estimate the residual distribution?  You need to provide at least a bit of the "why" so that this isn't a total non-sequitur. XXX
+
 
 
 # R package: autovi {#sec-autovi}
