@@ -129,10 +129,9 @@ XXX this isn't completely clear -- why is the computer vision model used to esti
 # R package: autovi {#sec-autovi}
 
 The main purpose of `autovi` is to provide rejection decisions and $p$-values for testing the null hypothesis ($H_0$) that the regression model is correctly specified. The package provides automated interpretation of residual plots using computer vision. The name `autovi` stands for **auto**mated **v**isual **i**nference. <!--While initially designed for linear regression residual diagnostics, it has the potential to be extended to broader visual inference applications, as we discuss in section @sec-autovi-infrastructure.-->
+This functionality can be accessed through the R package `autovi`, or through a web interface, `autovi.web`, which allows use without the full installation of R, Python, and package dependencies on the user's system.  locally.  
 
-There are two ways to access the package, directly using R or through a web interface, `autovi.web`. The web interface has the advantage that it can be used without installing Python, R and the relevant packages locally.  
-
-## Motivation for usage {#sec-why}
+## Motivation {#sec-why}
 
 @fig-three-examples shows three sets of plots of residuals against fitted values. The simulated example in (a) might be interpreted as a heteroscedastic pattern, however the automated reading would predict this to have a visual signal strength (VSS) of 1.53, with a corresponding $p$-value of 0.25. This means it would be interpreted as a good residual plot, that there is nothing in the data to indicate a violation of model assumptions. Skewness in the predictor variables is generating the apparent heteroscedasticity, where the smaller variance in residuals at larger fitted values is due to smaller sample size only. The Breusch-Pagan test  [@breusch1979simple] for heteroscedasticity would also not reject this as good residual plot.
 
