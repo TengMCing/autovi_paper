@@ -107,7 +107,7 @@ To train a computer vision model a measure of the visible pattern in a plot is n
 
 In the context of regression model diagnostics, VSS describes the clarity of visual patterns on a diagnostic plot that may indicate model violations. Violations can be categorized as weak, moderate, or strong, but here we treat it as a continuous positive real variable. Importantly, its interpretation depends on how it is linked to a function of the data or the underlying data generating process. Consequently, the calculation of VSS can be vary across different model classes or within the same model, depending on the generating function.
 
-VSS is defined as an estimate of a distance measure that quantifies the disparity between the residual distribution of a fitted classical normal linear regression model and a reference distribution, and more details can be found in @li2024automated. This measure is based on the Kullback-Leibler (KL) divergence:
+VSS is an estimate of the distance between the residual distribution of a fitted classical normal linear regression model and a reference distribution; more details can be found in @li2024automated. The distance measure is based on the Kullback-Leibler (KL) divergence:
 
 \begin{equation*} \label{eq:kl-0}
 D = \log\left(1 + D_{KL}\right),
