@@ -203,8 +203,7 @@ In the R environment, `autovi` utilizes several libraries. `ggplot2` [@ggplot2] 
 
 ## Installation
 
-The `autovi` package is available on CRAN. It is actively developed and maintained, with the latest updates accessible on GitHub. The code discussed in this paper is based on `autovi` version 0.4.1.
-
+The `autovi` package is available on CRAN. It is actively developed and maintained, with the latest updates accessible on GitHub. This paper uses `autovi` version 0.4.1.
 The package includes internal functions to check the current Python environment used by the `reticulate` package. If the necessary Python packages are not installed in the Python interpreter, an error will be raised. If you want to select a specific Python environment, you can do so by calling the `reticulate::use_python()` function before using the `autovi` package. 
 
 We recommend using the Shiny app `autovi.web` if users encounter installation problems. 
