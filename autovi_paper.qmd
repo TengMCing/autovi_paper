@@ -195,7 +195,7 @@ p1 + p2 + p3 + plot_layout(ncol=3)
 
 ## Implementation {#sec-autovi-implementation}
 
-The `autovi` package is built on the `bandicoot` object-oriented programming (OOP) system [@bandicoot], marking a departure from R’s traditional S3 generic system. This OOP architecture enhances flexibility and modularity, allowing users to redefine key functions through method overriding. While similar functionality could be achieved using R’s S3 system with generic functions, the OOP framework offers a more structured and extensible foundation for the package.
+The `autovi` package is built on the `bandicoot` object-oriented programming (OOP) system [@bandicoot], marking a departure from R’s traditional S3 generic system. This OOP architecture enhances flexibility and modularity, allowing users to redefine key functions through method overriding XXX I think the technical term is overloading? XXX. While similar functionality could be achieved using R’s S3 system with generic functions, the OOP framework offers a more structured and extensible foundation for the package. XXX Not sure if this last sentence is necessary XXX
  
 The `autovi` infrastructure effectively integrates multiple programming languages and libraries into a comprehensive analytical tool. It relies on five core libraries from Python and R, each playing a critical role in the analysis pipeline. In Python, `pillow` [@clark2015pillow] handles image processing tasks such as reading and resizing PNG files of residual plots, then converting them into input tensors for further analysis. The `TensorFlow` [@abadi2016tensorflow] library, a key component of modern machine learning, is used to predict the VSS of these plots through a pre-trained convolutional neural network.
 
