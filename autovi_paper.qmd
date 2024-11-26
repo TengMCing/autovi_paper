@@ -216,7 +216,7 @@ Three steps are needed to get an automated assessment of a set of residuals and 
 
 1. Load the `autovi` package using the `library()` function.
 2. Create a checker object with a linear regression model.
-3. Call the `check()` method of the checker, which, by default, predicts the VSS for the true residual plot, 100 null plots, and 100 bootstrapped plots, storing the predictions internally. A concise report of the check results is then printed. 
+3. Call the `check()` method of the checker, which, by default, predicts the VSS for the true residual plot, 100 null plots, and 100 bootstrapped plots. The method stores the predictions internally and prints a concise results report. 
 
 The code to do this is:
 
