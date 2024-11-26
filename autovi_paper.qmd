@@ -100,7 +100,7 @@ However, as discussed in @li2024automated, the lineup protocol has significant l
 
 To make the statistical testing procedure and trained computer vision model widely accessible, we developed the R package `autovi`, and a web interface, `autovi.web` to make it easy for users to automatically read their residual plots with the trained computer vision model.
 
-The remainder of this paper is structured as follows: @sec-autovi provides a detailed documentation of the `autovi` package, including its usage and infrastructure. @sec-autovi-web focuses on the `autovi.web` interface, describing its design and usage, along with illustrative examples. Finally, @sec-autovi-conclusion presents the main conclusions of this work.
+The remainder of this paper is structured as follows: @sec-vss-desc introduces the definition and computation of visual signal strength. @sec-autovi provides a detailed documentation of the `autovi` package, including its usage and infrastructure. @sec-autovi-web focuses on the `autovi.web` interface, describing its design and usage, along with illustrative examples. Finally, @sec-autovi-conclusion presents the main conclusions of this work.
 
 # Definition and computation of visual signal strength {#sec-vss-desc}
 

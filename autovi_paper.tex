@@ -173,6 +173,7 @@ doublespace,
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
+
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
@@ -210,6 +211,7 @@ learning, hypothesis testing, regression analysis, model diagnostics},
 
 \usepackage{lineno}
 \linenumbers
+
 
 \def\firstletters{\bgroup \catcode`-=10 \catcode`(=10 \filA}
 \def\filA#1{\filB#1 {\end} }
@@ -275,6 +277,7 @@ learning; hypothesis testing; regression analysis; model diagnostics}
 
 \maketitle
 
+
 \section{Introduction}\label{sec-autovi-introduction}
 
 Regression analysis is a widely used statistical modeling technique for
@@ -329,12 +332,13 @@ automatically read their residual plots with the trained computer vision
 model.
 
 The remainder of this paper is structured as follows:
-Section~\ref{sec-autovi} provides a detailed documentation of the
-\texttt{autovi} package, including its usage and infrastructure.
-Section~\ref{sec-autovi-web} focuses on the \texttt{autovi.web}
-interface, describing its design and usage, along with illustrative
-examples. Finally, Section~\ref{sec-autovi-conclusion} presents the main
-conclusions of this work.
+Section~\ref{sec-vss-desc} introduces the definition and computation of
+visual signal strength. Section~\ref{sec-autovi} provides a detailed
+documentation of the \texttt{autovi} package, including its usage and
+infrastructure. Section~\ref{sec-autovi-web} focuses on the
+\texttt{autovi.web} interface, describing its design and usage, along
+with illustrative examples. Finally, Section~\ref{sec-autovi-conclusion}
+presents the main conclusions of this work.
 
 \section{Definition and computation of visual signal
 strength}\label{sec-vss-desc}
@@ -961,6 +965,7 @@ These \texttt{R} packages were used for the work: \texttt{tidyverse}
 
 
   \bibliography{bibliography.bib}
+
 
 
 \end{document}
