@@ -343,26 +343,25 @@ presents the main conclusions of this work.
 \section{Definition and computation of visual signal
 strength}\label{sec-vss-desc}
 
-To train a computer vision model a measure of the visible pattern in a
-plot is needed. We call this the \textbf{visual signal strength} (VSS)
-measuring how prominently a specific set of visual patterns appears in
-an image. This can be computed for a training set of data, and plots,
+To train a computer vision model, a measure of the visible pattern in a
+plot is needed. We call this the \textbf{visual signal strength} (VSS),
+which measures how prominently a specific set of visual patterns appears
+in an image. This can be computed for a training set of data, and plots,
 where the generating distributions are specified.
 
-In the context of regression model diagnostics, it describes the clarity
-of visual patterns on a diagnostic plot that may indicate model
-violations. This concept can be categorized as weak, moderate, or
-strong. However, in our study, we treat it as a continuous positive real
-variable. Importantly, its interpretation depends on how it is linked to
-a function of the data or the underlying data generating process.
+In the context of regression model diagnostics, VSS describes the
+clarity of visual patterns on a diagnostic plot that may indicate model
+violations. Violations can be categorized as weak, moderate, or strong,
+but here we treat it as a continuous positive real variable.
+Importantly, its interpretation depends on how it is linked to a
+function of the data or the underlying data generating process.
 Consequently, the calculation of VSS can be vary across different model
 classes or within the same model, depending on the generating function.
 
-VSS is defined as an estimate of a distance measure that quantifies the
-disparity between the residual distribution of a fitted classical normal
-linear regression model and a reference distribution, and more details
-can be found in \citet{li2024automated}. This measure is based on the
-Kullback-Leibler (KL) divergence:
+VSS is an estimate of the distance between the residual distribution of
+a fitted classical normal linear regression model and a reference
+distribution; more details can be found in \citet{li2024automated}. The
+distance measure is based on the Kullback-Leibler (KL) divergence:
 
 \begin{equation*} \label{eq:kl-0}
 D = \log\left(1 + D_{KL}\right),
@@ -378,10 +377,16 @@ here, \(p(.)\) and \(q(.)\) are the probability density functions of the
 reference residual distribution \(P\) and the true residual distribution
 \(Q\), respectively.
 
-This distance measure requires knowledge of the true residual
-distribution, which is typically unknown. Therefore, a computer vision
-model was used for estimating the residual distribution \citep[see][ for
-more details]{li2024automated}.
+This distance measure depends on knowledge of the true residual
+distribution, which is often unknown. However, it can be estimated by
+identifying or approximating a mapping from a set of residuals to its
+corresponding distance measure. The computer vision model presented in
+\citet{li2024automated} approximates this mapping. It is trained on a
+large number of synthetic regression models, where the data-generating
+process is known, allowing the distance measure to be explicitly
+calculated. The model takes a residual plot as input and outputs the
+corresponding distance measure. Additional details are provided in
+\citet{li2024automated}.
 
 \section{R package: autovi}\label{sec-autovi}
 
@@ -390,14 +395,12 @@ and \(p\)-values for testing the null hypothesis (\(H_0\)) that the
 regression model is correctly specified. The package provides automated
 interpretation of residual plots using computer vision. The name
 \texttt{autovi} stands for \textbf{auto}mated \textbf{v}isual
-\textbf{i}nference.
+\textbf{i}nference. This functionality can be accessed through the R
+package \texttt{autovi}, or through a web interface,
+\texttt{autovi.web}, which allows use without the full installation of
+R, Python, and package dependencies on the user's system. locally.
 
-There are two ways to access the package, directly using R or through a
-web interface, \texttt{autovi.web}. The web interface has the advantage
-that it can be used without installing Python, R and the relevant
-packages locally.
-
-\subsection{Motivation for usage}\label{sec-why}
+\subsection{Motivation}\label{sec-why}
 
 Figure~\ref{fig-three-examples} shows three sets of plots of residuals
 against fitted values. The simulated example in (a) might be interpreted
@@ -457,10 +460,11 @@ The \texttt{autovi} package is built on the \texttt{bandicoot}
 object-oriented programming (OOP) system \citep{bandicoot}, marking a
 departure from R's traditional S3 generic system. This OOP architecture
 enhances flexibility and modularity, allowing users to redefine key
-functions through method overriding. While similar functionality could
-be achieved using R's S3 system with generic functions, the OOP
-framework offers a more structured and extensible foundation for the
-package.
+functions through method overriding XXX I think the technical term is
+overloading? XXX. While similar functionality could be achieved using
+R's S3 system with generic functions, the OOP framework offers a more
+structured and extensible foundation for the package. XXX Not sure if
+this last sentence is necessary XXX
 
 The \texttt{autovi} infrastructure effectively integrates multiple
 programming languages and libraries into a comprehensive analytical
@@ -468,35 +472,32 @@ tool. It relies on five core libraries from Python and R, each playing a
 critical role in the analysis pipeline. In Python, \texttt{pillow}
 \citep{clark2015pillow} handles image processing tasks such as reading
 and resizing PNG files of residual plots, then converting them into
-input tensors for further analysis. The \texttt{TensorFlow}
-\citep{abadi2016tensorflow} library, a key component of modern machine
-learning, is used to predict the VSS of these plots through a
-pre-trained convolutional neural network.
+input tensors for further analysis. \texttt{TensorFlow}
+\citep{abadi2016tensorflow}, a key component of modern machine learning,
+is used to predict the VSS of these plots using a pre-trained
+convolutional neural network.
 
 In the R environment, \texttt{autovi} utilizes several libraries.
 \texttt{ggplot2} \citep{ggplot2} generates the initial residual plots,
-saved as PNG files for visual input. The \texttt{cassowaryr}
-\citep{mason2022cassowaryr} library computes scagnostics (scatter plot
+saved as PNG files for visual input. \texttt{cassowaryr}
+\citep{mason2022cassowaryr} computes scagnostics (scatter plot
 diagnostics), providing numerical features that capture statistical
 properties of the plots. These scagnostics complement the visual
 analysis by offering quantitative metrics as secondary input to the
-computer vision model. The \texttt{reticulate} \citep{reticulate}
-package bridges R and Python, enabling seamless communication between
-the two languages and supporting the integrated infrastructure.
+computer vision model. \texttt{reticulate} \citep{reticulate} enables
+seamless communication between R and Python.
 
 \subsection{Installation}\label{installation}
 
 The \texttt{autovi} package is available on CRAN. It is actively
 developed and maintained, with the latest updates accessible on GitHub.
-The code discussed in this paper is based on \texttt{autovi} version
-0.4.1.
-
-The package includes internal functions to check the current Python
-environment used by the \texttt{reticulate} package. If the necessary
-Python packages are not installed in the Python interpreter, an error
-will be raised. If you want to select a specific Python environment, you
-can do so by calling the \texttt{reticulate::use\_python()} function
-before using the \texttt{autovi} package.
+This paper uses \texttt{autovi} version 0.4.1. The package includes
+internal functions to check the current Python environment used by the
+\texttt{reticulate} package. If the necessary Python packages are not
+installed in the Python interpreter, an error will be raised. If you
+want to select a specific Python environment, you can do so by calling
+the \texttt{reticulate::use\_python()} function before using the
+\texttt{autovi} package.
 
 We recommend using the Shiny app \texttt{autovi.web} if users encounter
 installation problems.
@@ -519,8 +520,8 @@ residuals and fitted values:
 \item
   Call the \texttt{check()} method of the checker, which, by default,
   predicts the VSS for the true residual plot, 100 null plots, and 100
-  bootstrapped plots, storing the predictions internally. A concise
-  report of the check results is then printed.
+  bootstrapped plots. The method stores the predictions internally and
+  prints a concise results report.
 \end{enumerate}
 
 The code to do this is:
@@ -650,7 +651,10 @@ bootstrapped models considered to have model violations.
 
 This visual summary provides an intuitive way to assess the model's fit
 and potential violations, allowing users to quickly grasp the results of
-the automated analysis.
+the automated analysis. XXX It might be a good idea to include a basic
+message explaining the plot and how it's used when it is generated,
+because a lot of non-statisticians aren't going to be used to
+interpreting these plots XXX
 
 \subsection{Modularized infrastructure}\label{sec-autovi-infrastructure}
 
@@ -698,8 +702,8 @@ them directly through function arguments. Similarly, the image reading
 and resizing module is fixed but will adapt to different Keras models by
 checking their input shapes. The remaining seven modules are designed to
 be overridable, enabling users to tailor the infrastructure to their
-specific needs. These modules are discussed in detail on the software's
-website.
+specific needs. These modules are discussed in detail in the package
+documentation.
 
 \section{Web interface: autovi.web}\label{sec-autovi-web}
 
@@ -730,12 +734,11 @@ Determining the best way to implement the backend was difficult. In our
 initial planning for \texttt{autovi.web}, we considered implementing the
 entire web application using the \texttt{webr} framework \citep{webr},
 which would have allowed the entire application to run directly in the
-user's browser. However, this approach was not feasible at the time of
-writing this paper. The reason is that one of the R packages
-\texttt{autovi} depends on the R package \texttt{splancs}
-\citep{splancs}, which uses compiled Fortran code. A working Emscripten
-\citep{zakai2011emscripten} version of this package, which would be
-required for \texttt{webr}, was not available.
+user's browser. However, \texttt{webr} does not support packages which
+use compiled fortran code, which is required by \texttt{splancs}
+\citep{splancs}, a dependency of \texttt{autovi}. In the future, it is
+possible that a working Emscripten \citep{zakai2011emscripten} version
+of this package may allow full \texttt{webr} support.
 
 We also explored the possibility of implementing the web interface using
 frameworks built on other languages, such as Python. However, server
@@ -746,11 +749,11 @@ Python is typically done using the \texttt{rpy2} Python library
 language syntax related to non-standard evaluation. Another option we
 considered was renting a server where we could have full control, such
 as those provided by cloud platforms like Google Cloud Platform (GCP) or
-Amazon Web Services (AWS). However, correctly setting up the server and
-ensuring a secure deployment requires significant expertise. Ultimately,
-the most practical solution was to use the \texttt{shiny} and
-\texttt{shinydashboard} frameworks, which are well-established in the R
-community and offer a solid foundation for web application development.
+Amazon Web Services (AWS). However, deploying and maintaining the server
+securely requires some expertise. Ultimately, the most practical
+solution was to use the \texttt{shiny} and \texttt{shinydashboard}
+frameworks, which are well-established in the R community and offer a
+solid foundation for web application development.
 
 The server-side configuration of \texttt{autovi.web} is carefully
 designed to support its functionality. Most required Python libraries,
@@ -767,8 +770,7 @@ reinstalled. While this ensures a clean environment for each session, it
 may lead to slightly longer loading times for the first user after a
 period of inactivity.
 
-In contrast to \texttt{autovi}, \texttt{autovi.web} does not use the
-native Python version of \texttt{TensorFlow}. Instead, it leverages
+In contrast to \texttt{autovi}, \texttt{autovi.web} leverages
 \texttt{TensorFlow.js}, a JavaScript library that allows the execution
 of machine learning models directly in the browser. This choice enables
 native browser execution, enhancing compatibility across different user

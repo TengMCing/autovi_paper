@@ -103,7 +103,7 @@ The remainder of this paper is structured as follows: @sec-vss-desc introduces t
 
 # Definition and computation of visual signal strength {#sec-vss-desc}
 
-To train a computer vision model a measure of the visible pattern in a plot is needed. We call this the **visual signal strength** (VSS) measuring how prominently a specific set of visual patterns appears in an image. This can be computed for a training set of data, and plots, where the generating distributions are specified.
+To train a computer vision model, a measure of the visible pattern in a plot is needed. We call this the **visual signal strength** (VSS), which measures how prominently a specific set of visual patterns appears in an image. This can be computed for a training set of data, and plots, where the generating distributions are specified.
 
 In the context of regression model diagnostics, VSS describes the clarity of visual patterns on a diagnostic plot that may indicate model violations. Violations can be categorized as weak, moderate, or strong, but here we treat it as a continuous positive real variable. Importantly, its interpretation depends on how it is linked to a function of the data or the underlying data generating process. Consequently, the calculation of VSS can be vary across different model classes or within the same model, depending on the generating function.
 
@@ -121,9 +121,7 @@ D_{KL} = \int_{\mathbb{R}^{n}}\log\frac{p(\boldsymbol{e})}{q(\boldsymbol{e})}p(\
 
 here, $p(.)$ and $q(.)$ are the probability density functions of the reference residual distribution $P$ and the true residual distribution $Q$, respectively.
 
-This distance measure requires knowledge of the true residual distribution, which is typically unknown. Therefore, a computer vision model was used for estimating the residual distribution [see @li2024automated for more details].
-XXX this isn't completely clear -- why is the computer vision model used to estimate the residual distribution?  You need to provide at least a bit of the "why" so that this isn't a total non-sequitur. XXX
-
+This distance measure depends on knowledge of the true residual distribution, which is often unknown. However, it can be estimated by identifying or approximating a mapping from a set of residuals to its corresponding distance measure. The computer vision model presented in @li2024automated approximates this mapping. It is trained on a large number of synthetic regression models, where the data-generating process is known, allowing the distance measure to be explicitly calculated. The model takes a residual plot as input and outputs the corresponding distance measure. Additional details are provided in @li2024automated.
 
 
 # R package: autovi {#sec-autovi}
