@@ -775,7 +775,7 @@ magick::image_read_pdf("figures/autovi_web_workflow_7.pdf")
 
 This paper presents new regression diagnostics software, the R package `autovi` and its accompanying web interface, `autovi.web`. It addresses a critical gap in the current landscape of statistical software. While regression tools are widely available, effective and efficient diagnostic methods have lagged behind, particularly in the field of residual plot interpretation.
 
-The `autovi` R package, introduced in this paper, automates the assessment of residual plots by incorporating a computer vision model, eliminating the need for time-consuming and potentially inconsistent human interpretation. This automation improves the efficiency of the diagnostic process and promotes consistency in model evaluation across different users and studies.
+The `autovi` R package, introduced in this paper, automates the assessment of residual plots by incorporating a computer vision model, reducing reliance on time-consuming and potentially inconsistent human interpretation. This automation improves the efficiency of the diagnostic process and promotes consistency in model evaluation across different users and studies.
 
 The development of the accompanying Shiny app, `autovi.web`, expands access to these advanced diagnostic tools, by providing a user-friendly interface. It makes automated residual plot assessment accessible to a broader audience, including those who may not have extensive programming experience. This web-based solution effectively addresses the potential barriers to adoption, such as complex dependencies and installation requirements, that are often associated with advanced statistical software.
 
