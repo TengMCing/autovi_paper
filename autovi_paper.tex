@@ -369,13 +369,29 @@ D = \log\left(1 + D_{KL}\right),
 
 where \(D_{KL}\) is given by:
 
-\begin{equation*} \label{eq:kl-1}
+\begin{equation} \label{eq:kl-1}
 D_{KL} = \int_{\mathbb{R}^{n}}\log\frac{p(\boldsymbol{e})}{q(\boldsymbol{e})}p(\boldsymbol{e})d\boldsymbol{e},
-\end{equation*}
+\end{equation}
 
 here, \(p(.)\) and \(q(.)\) are the probability density functions of the
 reference residual distribution \(P\) and the true residual distribution
 \(Q\), respectively.
+
+Equation \ref{eq:kl-1} can be adapted to different forms to account for
+various model violations. For instance, in the case of a linear
+regression model where necessary higher-order predictors,
+\(\boldsymbol{Z}\), and their corresponding parameter,
+\(\boldsymbol{\beta}_Z\), are omitted, the distance measure can be
+expanded as follows:
+
+\begin{equation*} \label{eq:kl-2}
+D_{KL} = \frac{1}{2}\left(\boldsymbol{\mu}_z^\top(\text{diag}(\boldsymbol{R}\sigma^2))^{-1}\boldsymbol{\mu}_z\right),
+\end{equation*}
+
+where
+\(\boldsymbol{\mu}_z = \boldsymbol{R}\boldsymbol{Z}\boldsymbol{\beta}_z\),
+\(\boldsymbol{R} = \boldsymbol{I}_n - \boldsymbol{X}(\boldsymbol{X}^\top\boldsymbol{X})^{-1}\boldsymbol{X}^\top\)
+and \(\boldsymbol{X}\) is the design matrix of the regression model.
 
 This distance measure depends on knowledge of the true residual
 distribution, which is often unknown. However, it can be estimated by
