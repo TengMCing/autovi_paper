@@ -119,17 +119,15 @@ doublespace,
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
@@ -176,6 +174,9 @@ doublespace,
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
 \usepackage[]{natbib}
 \bibliographystyle{anzsj}
 \usepackage{bookmark}
@@ -203,7 +204,7 @@ learning, hypothesis testing, regression analysis, model diagnostics},
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % The year in the following may need to be updated!
-\def\volumeyear{2024}
+\def\volumeyear{2025}
 
 % The following command ("obviously") effects line numbering
 % of the document.
@@ -249,24 +250,21 @@ Hall, 3310 Holdrege St Suite 340, Lincoln, NE 68583, United States\\
 }
 
 
-\date{2024}
+\date{2025}
 \begin{document}
 
 \begin{abstract}
-Visually assessing residual plots is a common advice for linear model
-diagnostics, however this approach requires manual human evaluation and
-thereby is not scalable for assessing many models. Human evaluation also
-has the potential to produce inconsistent decisions from different
-analysts. Using a lineup protocol, where the residual plot is embedded
-among null plots, can help to alleviate inconsistency, but requires even
-more human effort. This is the type of task that in today's world we
-might employ a robot to do the tedious work for a human. Here we
-describe a new R package that includes a computer vision model for
-automated assessment of residual plots, and an accompanying Shiny app
-for ease of use. For a user-provided sample of residuals, it predicts a
-measure of visual signal strength (VSS) and provides a suite of
-supporting information to assist the analyst decide on the
-appropriateness their model fit.
+Visual assessment of residual plots is a common approach for diagnosing
+linear models, but it relies on manual evaluation, which does not scale
+well and can lead to inconsistent decisions across analysts. The lineup
+protocol, which embeds the observed plot among null plots, can reduce
+subjectivity but requires even more human effort. In today's data-driven
+world, such tasks are well-suited for automation. We present a new R
+package that uses a computer vision model to automate the evaluation of
+residual plots. An accompanying Shiny app is provided for ease of use.
+Given a sample of residuals, the model predicts a visual signal strength
+(VSS) and offers supporting information to help analysts assess the
+adequacy of their model fit.
 \end{abstract}
 
 \keywords{initial data analysis; statistical graphics; data
@@ -452,7 +450,7 @@ non-normality.)
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-three-examples-1.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-three-examples-1.pdf}
 
 }
 
@@ -600,7 +598,7 @@ is either rejected or not, and help identify potential remedies.
 
 \centering{
 
-\includegraphics[width=0.6\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
+\includegraphics[width=0.6\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
 
 }
 
@@ -630,7 +628,7 @@ result through the \texttt{summary\_plot()} function.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
 
 }
 
@@ -668,7 +666,7 @@ the automated analysis.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
 
 }
 
@@ -840,7 +838,7 @@ start the assessment.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-setup-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-setup-1.png}
 
 }
 
@@ -877,7 +875,7 @@ assessment.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-lineup-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-lineup-1.png}
 
 }
 
@@ -893,7 +891,7 @@ of residual plots allows for manual inspection (right image).}
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-distributions-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-distributions-1.png}
 
 }
 
