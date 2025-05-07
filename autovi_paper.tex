@@ -301,15 +301,16 @@ conventional test annotations to reduce the risk of misinterpretation.
 
 However, relying solely on subjective assessments of these plots can
 lead to issues such as over-interpreting random patterns as model
-violations. \citet{li2024plot} demonstrated that visual methods using
-the lineup protocol \citep{buja2009statistical} for assessing residuals
-are more useful, and also perform more practically than conventional
-tests due to their reduced sensitivity to minor departures. Packages
-such as \texttt{nullabor} \citep{nullabor}, \texttt{HLMdiag}
-\citep{loy2014hlmdiag}, and \texttt{regressinator}
-\citep{regressinator}, enable users to compare observed residual plots
-with plots of samples from null distributions, helping to quantify the
-significance of any detected patterns.
+violations. \citet{li2024plot} demonstrated that visual inference
+methods, particularly those using the lineup protocol
+\citep{buja2009statistical}, offer more practical and reliable
+assessments of residual patterns than conventional tests, as they are
+less sensitive to minor departures. Packages such as \texttt{nullabor}
+\citep{nullabor}, \texttt{HLMdiag} \citep{loy2014hlmdiag}, and
+\texttt{regressinator} \citep{regressinator} support this approach by
+enabling users to compare observed residual plots with plots generated
+under null hypothesis, thereby helping to quantify the significance of
+any detected patterns.
 
 However, as discussed in \citet{li2024automated}, the lineup protocol
 has significant limitations in large-scale applications due to
