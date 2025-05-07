@@ -121,7 +121,7 @@ The computer vision model approximates this mapping from a set of residuals to i
 
 # R package: autovi {#sec-autovi}
 
-The main purpose of `autovi` is to provide rejection decisions and $p$-values for testing the null hypothesis ($H_0$) that the regression model is correctly specified. The package provides automated interpretation of residual plots using computer vision. The name `autovi` stands for **auto**mated **v**isual **i**nference. This functionality can be accessed through the R package `autovi`, or through a web interface, `autovi.web`, which allows use without the full installation of R, Python, and package dependencies on the user's system.  locally.  
+The main purpose of `autovi` is to provide rejection decisions and $p$-values for testing the null hypothesis ($H_0$) that the regression model is correctly specified. The package provides automated interpretation of residual plots using computer vision. The name `autovi` stands for **auto**mated **v**isual **i**nference. This functionality can be accessed through the R package `autovi`, or through a web interface, `autovi.web`, which enables users to perform analyses without installing R, Python, or their associated dependencies locally.
 
 ## Motivation {#sec-why}
 
