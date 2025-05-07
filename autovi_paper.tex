@@ -312,22 +312,22 @@ enabling users to compare observed residual plots with plots generated
 under null hypothesis, thereby helping to quantify the significance of
 any detected patterns.
 
-However, as discussed in \citet{li2024automated}, the lineup protocol
-has significant limitations in large-scale applications due to
-dependence on human labor. Thus, a computer vision model was developed
-with an associated statistical testing procedure to automate the
-assessment of residual plots. This model takes a residual plot and a
-vector of auxiliary variables (such as the number of observations) as
-inputs and outputs the predicted visual signal strength (VSS). This
-strength estimates the distance between the residual distribution of the
-fitted regression model and the reference distribution assumed under
+As noted in \citet{li2024automated}, the lineup protocol has significant
+limitations in large-scale applications due to its reliance on human
+labor. To overcome this constraint, a computer vision model was
+developed alongside a corresponding statistical testing procedure to
+autmoate the assessment of residual plots. The model takes as input a
+residual plot and a set of auxiliary variables (such as the number of
+observations) and outputs a predicted visual signal strength (VSS). This
+VSS estimates the degree of deviation between the residual distribution
+of the fitted model and the reference distribution expected under
 correct model specification.
 
 To make the statistical testing procedure and trained computer vision
-model widely accessible, we developed the R package \texttt{autovi}, and
-a web interface, \texttt{autovi.web} to make it easy for users to
-automatically read their residual plots with the trained computer vision
-model.
+model widely accessible, we developed the R package \texttt{autovi}
+along with a companion web interface, \texttt{autovi.web}, which allows
+users to automatically assess their residual plots using the trained
+computer vision model.
 
 The remainder of this paper is structured as follows:
 Section~\ref{sec-vss-desc} introduces the definition and computation of
