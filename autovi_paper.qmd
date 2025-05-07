@@ -231,6 +231,17 @@ checker <- auto_vi(fitted_model = lm(dist ~ speed, data = cars))
 ```
 
 ```{r message=TRUE}
+if (!file.exists("cached_data/autovi_checker_demo_print.rds")) {
+  checker$keras_model <- get_keras_model("vss_phn_32") 
+  checker$check()
+  saveRDS(checker$..str..(), "cached_data/autovi_checker_demo_print.rds")
+} else {
+  cli::cli_h3(readRDS("cached_data/autovi_checker_demo_print.rds"))
+}
+```
+
+
+```{r}
 if (!file.exists("cached_data/autovi_check_demo.rds")) {
   checker$keras_model <- get_keras_model("vss_phn_32") 
   checker$check()
@@ -238,8 +249,6 @@ if (!file.exists("cached_data/autovi_check_demo.rds")) {
 } else {
   checker$check_result <- readRDS("cached_data/autovi_check_demo.rds")
 }
-
-checker
 ```
 
 The summary includes observed VSS of the true residual plot and associated $p$-value of the automated visual test. The $p$-value is the proportion of null plots (out of the total 100) that have VSS greater than or equal to that of the true residual plot. The report also provides sample quantiles of VSS for null samples and bootstrapped data plots, providing more information about the sampling variability and a likelihood of model violations. The likelihood is computed from the proportion of values greater than the observed VSS in both the bootstrapped data values and the simulated null values.

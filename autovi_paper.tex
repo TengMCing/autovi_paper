@@ -551,25 +551,25 @@ It produces the following summary:
 -- <AUTO_VI object>
 Status:
  - Fitted model: lm
- - Keras model: UNKNOWN
+ - Keras model: (None, 32, 32, 3) + (None, 5) -> (None, 1)
     - Output node index: 1
  - Result:
-    - Observed visual signal strength: 3.162 (p-value = 0.0396)
+    - Observed visual signal strength: 3.16 (p-value = 0.0396)
     - Null visual signal strength: [100 draws]
        - Mean: 1.274
        - Quantiles: 
-          ╔═════════════════════════════════════════════════╗
-          ║   25%    50%    75%    80%    90%    95%    99% ║
-          ║0.8021 1.1109 1.5751 1.6656 1.9199 2.6564 3.3491 ║
-          ╚═════════════════════════════════════════════════╝
+          ╔══════════════════════════════════════════╗
+          ║  25%   50%   75%   80%   90%   95%   99% ║
+          ║0.802 1.111 1.575 1.666 1.919 2.657 3.348 ║
+          ╚══════════════════════════════════════════╝
     - Bootstrapped visual signal strength: [100 draws]
-       - Mean: 2.786 (p-value = 0.05941)
+       - Mean: 2.795 (p-value = 0.05941)
        - Quantiles: 
           ╔══════════════════════════════════════════╗
           ║  25%   50%   75%   80%   90%   95%   99% ║
-          ║2.452 2.925 3.173 3.285 3.463 3.505 3.652 ║
+          ║2.455 2.941 3.177 3.300 3.474 3.537 3.668 ║
           ╚══════════════════════════════════════════╝
-    - Likelihood ratio: 0.7275 (boot) / 0.06298 (null) = 11.55 
+    - Likelihood ratio: 0.7333 (boot) / 0.06284 (null) = 11.67 
 \end{verbatim}
 
 The summary includes observed VSS of the true residual plot and
