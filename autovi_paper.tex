@@ -741,9 +741,9 @@ Poisson regression using the \texttt{glm} framework:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{AUTO\_GLM\_VI }\OtherTok{\textless{}{-}} \FunctionTok{new\_class}\NormalTok{(AUTO\_VI, }\AttributeTok{class\_name =} \StringTok{"AUTO\_GLM\_VI"}\NormalTok{)}
+\NormalTok{AUTO\_POIS\_VI }\OtherTok{\textless{}{-}} \FunctionTok{new\_class}\NormalTok{(AUTO\_VI, }\AttributeTok{class\_name =} \StringTok{"AUTO\_POIS\_VI"}\NormalTok{)}
 \FunctionTok{register\_method}\NormalTok{(}
-\NormalTok{  AUTO\_GLM\_VI,}
+\NormalTok{  AUTO\_POIS\_VI,}
   \AttributeTok{get\_fitted\_and\_resid =} \ControlFlowTok{function}\NormalTok{(}\AttributeTok{fitted\_model =}\NormalTok{ self}\SpecialCharTok{$}\NormalTok{fitted\_model) \{}
     \FunctionTok{tibble}\NormalTok{(}\AttributeTok{.fitted =} \FunctionTok{fitted}\NormalTok{(fitted\_model),}
            \AttributeTok{.resid =} \FunctionTok{resid}\NormalTok{(fitted\_model, }\AttributeTok{type =} \StringTok{"pearson"}\NormalTok{))}
@@ -755,7 +755,7 @@ Poisson regression using the \texttt{glm} framework:
     \FunctionTok{return}\NormalTok{(self}\SpecialCharTok{$}\FunctionTok{get\_fitted\_and\_resid}\NormalTok{(new\_mod))}
 \NormalTok{  \}}
 \NormalTok{)}
-\NormalTok{auto\_glm\_vi }\OtherTok{\textless{}{-}}\NormalTok{ AUTO\_GLM\_VI}\SpecialCharTok{$}\NormalTok{instantiate}
+\NormalTok{auto\_pois\_vi }\OtherTok{\textless{}{-}}\NormalTok{ AUTO\_POIS\_VI}\SpecialCharTok{$}\NormalTok{instantiate}
 \end{Highlighting}
 \end{Shaded}
 
@@ -782,14 +782,13 @@ classes, refer to \citet{li2024automated}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{set.seed}\NormalTok{(}\DecValTok{10086}\NormalTok{)}
 \NormalTok{x }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{300}\NormalTok{, }\AttributeTok{sd =} \FloatTok{0.5}\NormalTok{)}
 \NormalTok{y }\OtherTok{\textless{}{-}} \FunctionTok{rpois}\NormalTok{(}\DecValTok{300}\NormalTok{, }\AttributeTok{lambda =} \FunctionTok{exp}\NormalTok{(}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ x }\SpecialCharTok{+}\NormalTok{ x}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
-\NormalTok{y\_fit }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x, }\AttributeTok{family =} \StringTok{"poisson"}\NormalTok{)}
-
-\NormalTok{glm\_checker }\OtherTok{\textless{}{-}} \FunctionTok{auto\_glm\_vi}\NormalTok{(}\FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x, }\AttributeTok{family =} \StringTok{"poisson"}\NormalTok{),}
-                           \AttributeTok{keras\_model =} \FunctionTok{get\_keras\_model}\NormalTok{(}\StringTok{"vss\_phn\_32"}\NormalTok{))}
-\NormalTok{glm\_checker}\SpecialCharTok{$}\FunctionTok{plot\_lineup}\NormalTok{()}
+\NormalTok{pois\_checker }\OtherTok{\textless{}{-}} \FunctionTok{auto\_pois\_vi}\NormalTok{(}
+  \FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x, }\AttributeTok{family =} \StringTok{"poisson"}\NormalTok{),}
+  \AttributeTok{keras\_model =} \FunctionTok{get\_keras\_model}\NormalTok{(}\StringTok{"vss\_phn\_32"}\NormalTok{)}
+\NormalTok{)}
+\NormalTok{pois\_checker}\SpecialCharTok{$}\FunctionTok{plot\_lineup}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -799,7 +798,7 @@ classes, refer to \citet{li2024automated}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{glm\_checker}\SpecialCharTok{$}\FunctionTok{check}\NormalTok{()}
+\NormalTok{pois\_checker}\SpecialCharTok{$}\FunctionTok{check}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -807,7 +806,7 @@ classes, refer to \citet{li2024automated}.
 \end{verbatim}
 
 \begin{verbatim}
--- <AUTO_GLM_VI object>
+-- <AUTO_POIS_VI object>
 Status:
  - Fitted model: glm, lm
  - Keras model: (None, 32, 32, 3) + (None, 5) -> (None, 1)

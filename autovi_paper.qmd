@@ -301,9 +301,9 @@ We provide an example of defining a new checker class tailored for Poisson regre
 3. Create an alias for the `instantiate()` method of the new class.
 
 ```{r echo = TRUE}
-AUTO_GLM_VI <- new_class(AUTO_VI, class_name = "AUTO_GLM_VI")
+AUTO_POIS_VI <- new_class(AUTO_VI, class_name = "AUTO_POIS_VI")
 register_method(
-  AUTO_GLM_VI,
+  AUTO_POIS_VI,
   get_fitted_and_resid = function(fitted_model = self$fitted_model) {
     tibble(.fitted = fitted(fitted_model),
            .resid = resid(fitted_model, type = "pearson"))
@@ -315,7 +315,7 @@ register_method(
     return(self$get_fitted_and_resid(new_mod))
   }
 )
-auto_glm_vi <- AUTO_GLM_VI$instantiate
+auto_pois_vi <- AUTO_POIS_VI$instantiate
 ```
 
 The resulting checker class can be employed analogously to the linear model case described in @sec-autovi-usage. For illustration, we fit a Poisson model in which the quadratic term of the predictor $x$ is intentionally omitted. This misspecification manifests as a pronounced U-shaped pattern in the lineup display, which is also successfully identified by the computer vision model, yielding a p-value substantially below the conventional threshold of 0.05.
@@ -323,39 +323,36 @@ The resulting checker class can be employed analogously to the linear model case
 It is important to note, however, that the pre-trained computer vision model was developed specifically for diagnostic evaluation of linear regression. Its applicability to other model classes relies on the assumption that the null residual plots exhibit characteristics broadly consistent with those of well-behaved linear regression residuals, that is, residuals should be approximately randomly scattered around zero, display roughly constant variance across the range of fitted values, and exhibit no discernible structure or curvature. If these conditions are not met, or if model violations do not give rise to visually detectable patterns, the validity of the automated diagnostics may be compromised. For further discussion on extending the methodology to other model classes, refer to @li2024automated.
 
 ```r
-set.seed(10086)
 x <- rnorm(300, sd = 0.5)
 y <- rpois(300, lambda = exp(1 + x + x^2))
-y_fit <- glm(y ~ x, family = "poisson")
-
-glm_checker <- auto_glm_vi(glm(y ~ x, family = "poisson"),
-                           keras_model = get_keras_model("vss_phn_32"))
-glm_checker$plot_lineup()
+pois_checker <- auto_pois_vi(
+  glm(y ~ x, family = "poisson"),
+  keras_model = get_keras_model("vss_phn_32")
+)
+pois_checker$plot_lineup()
 ```
 
 ```{r include = FALSE}
 set.seed(10086)
 x <- rnorm(300, sd = 0.5)
 y <- rpois(300, lambda = exp(1 + x + x^2))
-y_fit <- glm(y ~ x, family = "poisson")
-
-glm_checker <- auto_glm_vi(glm(y ~ x, family = "poisson"))
+pois_checker <- auto_pois_vi(glm(y ~ x, family = "poisson"))
 ```
 
 ```{r}
-glm_checker$plot_lineup()
+pois_checker$plot_lineup()
 ```
 
 ```r
-glm_checker$check()
+pois_checker$check()
 ```
 
 ```{r message = TRUE}
 if (!file.exists("cached_data/autovi_glm_checker_demo_print.rds")) {
-  glm_checker <- auto_glm_vi(glm(y ~ x, family = "poisson"),
-                           keras_model = get_keras_model("vss_phn_32"))
-  glm_checker$check()
-  saveRDS(glm_checker$..str..(), "cached_data/autovi_glm_checker_demo_print.rds")
+  pois_checker <- auto_pois_vi(glm(y ~ x, family = "poisson"),
+                               keras_model = get_keras_model("vss_phn_32"))
+  pois_checker$check()
+  saveRDS(pois_checker$..str..(), "cached_data/autovi_glm_checker_demo_print.rds")
 } else {
   cli::cli_h3(readRDS("cached_data/autovi_glm_checker_demo_print.rds"))
 }
