@@ -195,7 +195,7 @@ In the R environment, `autovi` utilizes several libraries. `ggplot2` [@ggplot2] 
 
 ## Installation
 
-The `autovi` package is available on CRAN. It is actively developed and maintained, with the latest updates accessible on GitHub. This paper uses `autovi` version 0.4.1.
+The `autovi` package is available on CRAN. It is actively developed and maintained, with the latest updates accessible on GitHub. This paper uses `autovi` version 0.4.2.
 The package includes internal functions to check the current Python environment used by the `reticulate` package. If the necessary Python packages are not installed in the Python interpreter, an error will be raised. If you want to select a specific Python environment, you can do so by calling the `reticulate::use_python()` function before using the `autovi` package. 
 
 We recommend using the Shiny app `autovi.web` if users encounter installation problems. 
@@ -288,7 +288,81 @@ The initial motivation for developing `autovi` was to create a convenient interf
 
 The infrastructure of `autovi` consists of ten core modules: data extraction, bootstrapping and model refitting, fitted values and residuals extraction, auxiliary computation, null residual simulation, plotting, plot saving, image reading and resizing, VSS prediction, and $p$-value computation. Each module is designed with minimal dependency on the preceding modules, allowing users to customize parts of the infrastructure without affecting its overall integrity. An overview of this infrastructure is illustrated in @fig-autovi-diag.
 
-The modules for VSS prediction and $p$-value computation are predefined and cannot be overridden, although users can interact with them directly through function arguments. Similarly, the image reading and resizing module is fixed but will adapt to different Keras models by checking their input shapes. The remaining seven modules are designed to be overridable, enabling users to tailor the infrastructure to their specific needs. These modules are discussed in detail in the package documentation. <!-- in the following sections.-->
+The modules for VSS prediction and $p$-value computation are predefined and cannot be overridden, although users can interact with them directly through function arguments. Similarly, the image reading and resizing module is fixed but will adapt to different Keras models by checking their input shapes. The remaining seven modules are designed to be overridable, enabling users to tailor the infrastructure to their specific needs. These modules are discussed in detail in the package documentation. 
+
+## Extension to Other Model Classes
+
+The `autovi` R package can be extended to accommodate other classes of models beyond linear regression, such as generalized linear models (`glm`). This is achieved by substituting the relevant overridable modules, as illustrated in @fig-autovi-diag.
+
+We provide an example of defining a new checker class tailored for Poisson regression using the `glm` framework:
+
+1. Define a new class using `new_class()` with `AUTO_VI` as the parent class.
+2. Override the necessary methods using `register_method()`. In this example, we use Pearson residuals. To simulate null residuals, we assume the fitted model is correct and the estimated coefficients are accurate. New response values are generated accordingly, and a new model is fitted to this simulated response. Null residuals are then extracted from this refitted model.
+3. Create an alias for the `instantiate()` method of the new class.
+
+```{r echo = TRUE}
+AUTO_GLM_VI <- new_class(AUTO_VI, class_name = "AUTO_GLM_VI")
+register_method(
+  AUTO_GLM_VI,
+  get_fitted_and_resid = function(fitted_model = self$fitted_model) {
+    tibble(.fitted = fitted(fitted_model),
+           .resid = resid(fitted_model, type = "pearson"))
+  },
+  null_method = function(fitted_model = self$fitted_model) {
+    dat <- model.frame(fitted_model)
+    dat[[1]] <- rpois(nrow(dat), lambda = fitted(fitted_model))
+    new_mod <- update(fitted_model, data = dat)
+    return(self$get_fitted_and_resid(new_mod))
+  }
+)
+auto_glm_vi <- AUTO_GLM_VI$instantiate
+```
+
+The resulting checker class can be employed analogously to the linear model case described in @sec-autovi-usage. For illustration, we fit a Poisson model in which the quadratic term of the predictor $x$ is intentionally omitted. This misspecification manifests as a pronounced U-shaped pattern in the lineup display, which is also successfully identified by the computer vision model, yielding a p-value substantially below the conventional threshold of 0.05.
+
+It is important to note, however, that the pre-trained computer vision model was developed specifically for diagnostic evaluation of linear regression. Its applicability to other model classes relies on the assumption that the null residual plots exhibit characteristics broadly consistent with those of well-behaved linear regression residuals, that is, residuals should be approximately randomly scattered around zero, display roughly constant variance across the range of fitted values, and exhibit no discernible structure or curvature. If these conditions are not met, or if model violations do not give rise to visually detectable patterns, the validity of the automated diagnostics may be compromised. For further discussion on extending the methodology to other model classes, refer to @li2024automated.
+
+```r
+set.seed(10086)
+x <- rnorm(300, sd = 0.5)
+y <- rpois(300, lambda = exp(1 + x + x^2))
+y_fit <- glm(y ~ x, family = "poisson")
+
+glm_checker <- auto_glm_vi(glm(y ~ x, family = "poisson"),
+                           keras_model = get_keras_model("vss_phn_32"))
+glm_checker$plot_lineup()
+```
+
+```{r include = FALSE}
+set.seed(10086)
+x <- rnorm(300, sd = 0.5)
+y <- rpois(300, lambda = exp(1 + x + x^2))
+y_fit <- glm(y ~ x, family = "poisson")
+
+glm_checker <- auto_glm_vi(glm(y ~ x, family = "poisson"))
+```
+
+```{r}
+glm_checker$plot_lineup()
+```
+
+```r
+glm_checker$check()
+```
+
+```{r message = TRUE}
+if (!file.exists("cached_data/autovi_glm_checker_demo_print.rds")) {
+  glm_checker <- auto_glm_vi(glm(y ~ x, family = "poisson"),
+                           keras_model = get_keras_model("vss_phn_32"))
+  glm_checker$check()
+  saveRDS(glm_checker$..str..(), "cached_data/autovi_glm_checker_demo_print.rds")
+} else {
+  cli::cli_h3(readRDS("cached_data/autovi_glm_checker_demo_print.rds"))
+}
+```
+
+
+<!-- in the following sections.-->
 <!-- FIXME: ET: which website? >
 <!--
 ### Initialization

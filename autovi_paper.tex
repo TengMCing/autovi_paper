@@ -499,7 +499,7 @@ seamless communication between R and Python.
 
 The \texttt{autovi} package is available on CRAN. It is actively
 developed and maintained, with the latest updates accessible on GitHub.
-This paper uses \texttt{autovi} version 0.4.1. The package includes
+This paper uses \texttt{autovi} version 0.4.2. The package includes
 internal functions to check the current Python environment used by the
 \texttt{reticulate} package. If the necessary Python packages are not
 installed in the Python interpreter, an error will be raised. If you
@@ -709,6 +709,127 @@ checking their input shapes. The remaining seven modules are designed to
 be overridable, enabling users to tailor the infrastructure to their
 specific needs. These modules are discussed in detail in the package
 documentation.
+
+\subsection{Extension to Other Model
+Classes}\label{extension-to-other-model-classes}
+
+The \texttt{autovi} R package can be extended to accommodate other
+classes of models beyond linear regression, such as generalized linear
+models (\texttt{glm}). This is achieved by substituting the relevant
+overridable modules, as illustrated in Figure~\ref{fig-autovi-diag}.
+
+We provide an example of defining a new checker class tailored for
+Poisson regression using the \texttt{glm} framework:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Define a new class using \texttt{new\_class()} with \texttt{AUTO\_VI}
+  as the parent class.
+\item
+  Override the necessary methods using \texttt{register\_method()}. In
+  this example, we use Pearson residuals. To simulate null residuals, we
+  assume the fitted model is correct and the estimated coefficients are
+  accurate. New response values are generated accordingly, and a new
+  model is fitted to this simulated response. Null residuals are then
+  extracted from this refitted model.
+\item
+  Create an alias for the \texttt{instantiate()} method of the new
+  class.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{AUTO\_GLM\_VI }\OtherTok{\textless{}{-}} \FunctionTok{new\_class}\NormalTok{(AUTO\_VI, }\AttributeTok{class\_name =} \StringTok{"AUTO\_GLM\_VI"}\NormalTok{)}
+\FunctionTok{register\_method}\NormalTok{(}
+\NormalTok{  AUTO\_GLM\_VI,}
+  \AttributeTok{get\_fitted\_and\_resid =} \ControlFlowTok{function}\NormalTok{(}\AttributeTok{fitted\_model =}\NormalTok{ self}\SpecialCharTok{$}\NormalTok{fitted\_model) \{}
+    \FunctionTok{tibble}\NormalTok{(}\AttributeTok{.fitted =} \FunctionTok{fitted}\NormalTok{(fitted\_model),}
+           \AttributeTok{.resid =} \FunctionTok{resid}\NormalTok{(fitted\_model, }\AttributeTok{type =} \StringTok{"pearson"}\NormalTok{))}
+\NormalTok{  \},}
+  \AttributeTok{null\_method =} \ControlFlowTok{function}\NormalTok{(}\AttributeTok{fitted\_model =}\NormalTok{ self}\SpecialCharTok{$}\NormalTok{fitted\_model) \{}
+\NormalTok{    dat }\OtherTok{\textless{}{-}} \FunctionTok{model.frame}\NormalTok{(fitted\_model)}
+\NormalTok{    dat[[}\DecValTok{1}\NormalTok{]] }\OtherTok{\textless{}{-}} \FunctionTok{rpois}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(dat), }\AttributeTok{lambda =} \FunctionTok{fitted}\NormalTok{(fitted\_model))}
+\NormalTok{    new\_mod }\OtherTok{\textless{}{-}} \FunctionTok{update}\NormalTok{(fitted\_model, }\AttributeTok{data =}\NormalTok{ dat)}
+    \FunctionTok{return}\NormalTok{(self}\SpecialCharTok{$}\FunctionTok{get\_fitted\_and\_resid}\NormalTok{(new\_mod))}
+\NormalTok{  \}}
+\NormalTok{)}
+\NormalTok{auto\_glm\_vi }\OtherTok{\textless{}{-}}\NormalTok{ AUTO\_GLM\_VI}\SpecialCharTok{$}\NormalTok{instantiate}
+\end{Highlighting}
+\end{Shaded}
+
+The resulting checker class can be employed analogously to the linear
+model case described in Section~\ref{sec-autovi-usage}. For
+illustration, we fit a Poisson model in which the quadratic term of the
+predictor \(x\) is intentionally omitted. This misspecification
+manifests as a pronounced U-shaped pattern in the lineup display, which
+is also successfully identified by the computer vision model, yielding a
+p-value substantially below the conventional threshold of 0.05.
+
+It is important to note, however, that the pre-trained computer vision
+model was developed specifically for diagnostic evaluation of linear
+regression. Its applicability to other model classes relies on the
+assumption that the null residual plots exhibit characteristics broadly
+consistent with those of well-behaved linear regression residuals, that
+is, residuals should be approximately randomly scattered around zero,
+display roughly constant variance across the range of fitted values, and
+exhibit no discernible structure or curvature. If these conditions are
+not met, or if model violations do not give rise to visually detectable
+patterns, the validity of the automated diagnostics may be compromised.
+For further discussion on extending the methodology to other model
+classes, refer to \citet{li2024automated}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{10086}\NormalTok{)}
+\NormalTok{x }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{300}\NormalTok{, }\AttributeTok{sd =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{y }\OtherTok{\textless{}{-}} \FunctionTok{rpois}\NormalTok{(}\DecValTok{300}\NormalTok{, }\AttributeTok{lambda =} \FunctionTok{exp}\NormalTok{(}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ x }\SpecialCharTok{+}\NormalTok{ x}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+\NormalTok{y\_fit }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x, }\AttributeTok{family =} \StringTok{"poisson"}\NormalTok{)}
+
+\NormalTok{glm\_checker }\OtherTok{\textless{}{-}} \FunctionTok{auto\_glm\_vi}\NormalTok{(}\FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x, }\AttributeTok{family =} \StringTok{"poisson"}\NormalTok{),}
+                           \AttributeTok{keras\_model =} \FunctionTok{get\_keras\_model}\NormalTok{(}\StringTok{"vss\_phn\_32"}\NormalTok{))}
+\NormalTok{glm\_checker}\SpecialCharTok{$}\FunctionTok{plot\_lineup}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/unnamed-chunk-9-1.pdf}
+\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{glm\_checker}\SpecialCharTok{$}\FunctionTok{check}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+\end{verbatim}
+
+\begin{verbatim}
+-- <AUTO_GLM_VI object>
+Status:
+ - Fitted model: glm, lm
+ - Keras model: (None, 32, 32, 3) + (None, 5) -> (None, 1)
+    - Output node index: 1
+ - Result:
+    - Observed visual signal strength: 4.875 (p-value = 0.009901)
+    - Null visual signal strength: [100 draws]
+       - Mean: 1.331
+       - Quantiles: 
+          ╔══════════════════════════════════════════╗
+          ║  25%   50%   75%   80%   90%   95%   99% ║
+          ║1.035 1.233 1.488 1.644 1.941 2.276 2.639 ║
+          ╚══════════════════════════════════════════╝
+    - Bootstrapped visual signal strength: [100 draws]
+       - Mean: 5.51 (p-value = 0.009901)
+       - Quantiles: 
+          ╔══════════════════════════════════════════╗
+          ║  25%   50%   75%   80%   90%   95%   99% ║
+          ║5.330 5.505 5.698 5.735 5.830 5.903 6.013 ║
+          ╚══════════════════════════════════════════╝
+    - Likelihood ratio: 0.05096 (boot) / 0 (null) = Extremely large 
+\end{verbatim}
 
 \section{Web interface: autovi.web}\label{sec-autovi-web}
 
