@@ -588,31 +588,28 @@ The code to do this is:
 It produces the following summary:
 
 \begin{verbatim}
-\end{verbatim}
-
-\begin{verbatim}
--- <AUTO_VI object>
-Status:
- - Fitted model: lm
- - Keras model: (None, 32, 32, 3) + (None, 5) -> (None, 1)
-    - Output node index: 1
- - Result:
-    - Observed visual signal strength: 3.16 (p-value = 0.0396)
-    - Null visual signal strength: [100 draws]
-       - Mean: 1.274
-       - Quantiles: 
-          ╔══════════════════════════════════════════╗
-          ║  25%   50%   75%   80%   90%   95%   99% ║
-          ║0.802 1.111 1.575 1.666 1.919 2.657 3.348 ║
-          ╚══════════════════════════════════════════╝
-    - Bootstrapped visual signal strength: [100 draws]
-       - Mean: 2.795 (p-value = 0.05941)
-       - Quantiles: 
-          ╔══════════════════════════════════════════╗
-          ║  25%   50%   75%   80%   90%   95%   99% ║
-          ║2.455 2.941 3.177 3.300 3.474 3.537 3.668 ║
-          ╚══════════════════════════════════════════╝
-    - Likelihood ratio: 0.7333 (boot) / 0.06284 (null) = 11.67 
+<AUTO_VI object>
+ Status:
+  - Fitted model: lm
+  - Keras model: (None, 32, 32, 3) + (None, 5) -> (None, 1)
+     - Output node index: 1
+  - Result:
+     - Observed visual signal strength: 3.16 (p-value = 0.0396)
+     - Null visual signal strength: [100 draws]
+        - Mean: 1.274
+        - Quantiles: 
+           ╔══════════════════════════════════════════╗
+           ║  25%   50%   75%   80%   90%   95%   99% ║
+           ║0.802 1.111 1.575 1.666 1.919 2.657 3.348 ║
+           ╚══════════════════════════════════════════╝
+     - Bootstrapped visual signal strength: [100 draws]
+        - Mean: 2.795 (p-value = 0.05941)
+        - Quantiles: 
+           ╔══════════════════════════════════════════╗
+           ║  25%   50%   75%   80%   90%   95%   99% ║
+           ║2.455 2.941 3.177 3.300 3.474 3.537 3.668 ║
+           ╚══════════════════════════════════════════╝
+     - Likelihood ratio: 0.7333 (boot) / 0.06284 (null) = 11.67
 \end{verbatim}
 
 The summary includes observed VSS of the true residual plot and
@@ -642,7 +639,7 @@ is either rejected or not, and help identify potential remedies.
 
 \centering{
 
-\includegraphics[width=0.6\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
+\includegraphics[width=0.45\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
 
 }
 
@@ -815,9 +812,69 @@ The resulting checker class can be employed analogously to the linear
 model case described in Section~\ref{sec-autovi-usage}. For
 illustration, we fit a Poisson model in which the quadratic term of the
 predictor \(x\) is intentionally omitted. This misspecification
-manifests as a pronounced U-shaped pattern in the lineup display, which
-is also successfully identified by the computer vision model, yielding a
-p-value substantially below the conventional threshold of 0.05.
+manifests as a pronounced U-shaped pattern in the lineup display (see
+Figure~\ref{fig-pois-lineup}), which is also successfully identified by
+the computer vision model, yielding a p-value substantially below the
+conventional threshold of 0.05.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{300}\NormalTok{, }\AttributeTok{sd =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{y }\OtherTok{\textless{}{-}} \FunctionTok{rpois}\NormalTok{(}\DecValTok{300}\NormalTok{, }\AttributeTok{lambda =} \FunctionTok{exp}\NormalTok{(}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ x }\SpecialCharTok{+}\NormalTok{ x}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+\NormalTok{pois\_checker }\OtherTok{\textless{}{-}} \FunctionTok{auto\_pois\_vi}\NormalTok{(}
+  \FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x, }\AttributeTok{family =} \StringTok{"poisson"}\NormalTok{),}
+  \AttributeTok{keras\_model =} \FunctionTok{get\_keras\_model}\NormalTok{(}\StringTok{"vss\_phn\_32"}\NormalTok{)}
+\NormalTok{)}
+\NormalTok{pois\_checker}\SpecialCharTok{$}\FunctionTok{plot\_lineup}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-pois-lineup-1.pdf}
+
+}
+
+\caption{\label{fig-pois-lineup}A lineup of residual plots from Poisson
+generalized linear models, with the true residual plot at position 4,
+which displays a distinct U-shaped pattern. In contrast, the null plots
+show characteristics broadly consistent with well-behaved residuals from
+linear regression models.}
+
+\end{figure}%
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pois\_checker}\SpecialCharTok{$}\FunctionTok{check}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+<AUTO_POIS_VI object>
+ Status:
+  - Fitted model: glm, lm
+  - Keras model: (None, 32, 32, 3) + (None, 5) -> (None, 1)
+     - Output node index: 1
+  - Result:
+     - Observed visual signal strength: 4.875 (p-value = 0.009901)
+     - Null visual signal strength: [100 draws]
+        - Mean: 1.331
+        - Quantiles: 
+           ╔══════════════════════════════════════════╗
+           ║  25%   50%   75%   80%   90%   95%   99% ║
+           ║1.035 1.233 1.488 1.644 1.941 2.276 2.639 ║
+           ╚══════════════════════════════════════════╝
+     - Bootstrapped visual signal strength: [100 draws]
+        - Mean: 5.51 (p-value = 0.009901)
+        - Quantiles: 
+           ╔══════════════════════════════════════════╗
+           ║  25%   50%   75%   80%   90%   95%   99% ║
+           ║5.330 5.505 5.698 5.735 5.830 5.903 6.013 ║
+           ╚══════════════════════════════════════════╝
+     - Likelihood ratio: 0.05096 (boot) / 0 (null) = Extremely large
+\end{verbatim}
 
 It is important to note, however, that the pre-trained computer vision
 model included in \texttt{autovi}, such as \texttt{vss\_phn\_32} (see
@@ -835,56 +892,6 @@ cases, users are encouraged to train and apply their own \texttt{Keras}
 models. Detailed guidance on model training and discussion on extending
 the methodology to other model classes can be found in
 \citet{li2024automated}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{x }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\DecValTok{300}\NormalTok{, }\AttributeTok{sd =} \FloatTok{0.5}\NormalTok{)}
-\NormalTok{y }\OtherTok{\textless{}{-}} \FunctionTok{rpois}\NormalTok{(}\DecValTok{300}\NormalTok{, }\AttributeTok{lambda =} \FunctionTok{exp}\NormalTok{(}\DecValTok{1} \SpecialCharTok{+}\NormalTok{ x }\SpecialCharTok{+}\NormalTok{ x}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
-\NormalTok{pois\_checker }\OtherTok{\textless{}{-}} \FunctionTok{auto\_pois\_vi}\NormalTok{(}
-  \FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x, }\AttributeTok{family =} \StringTok{"poisson"}\NormalTok{),}
-  \AttributeTok{keras\_model =} \FunctionTok{get\_keras\_model}\NormalTok{(}\StringTok{"vss\_phn\_32"}\NormalTok{)}
-\NormalTok{)}
-\NormalTok{pois\_checker}\SpecialCharTok{$}\FunctionTok{plot\_lineup}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{center}
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/unnamed-chunk-7-1.pdf}
-\end{center}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{pois\_checker}\SpecialCharTok{$}\FunctionTok{check}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-\end{verbatim}
-
-\begin{verbatim}
--- <AUTO_POIS_VI object>
-Status:
- - Fitted model: glm, lm
- - Keras model: (None, 32, 32, 3) + (None, 5) -> (None, 1)
-    - Output node index: 1
- - Result:
-    - Observed visual signal strength: 4.875 (p-value = 0.009901)
-    - Null visual signal strength: [100 draws]
-       - Mean: 1.331
-       - Quantiles: 
-          ╔══════════════════════════════════════════╗
-          ║  25%   50%   75%   80%   90%   95%   99% ║
-          ║1.035 1.233 1.488 1.644 1.941 2.276 2.639 ║
-          ╚══════════════════════════════════════════╝
-    - Bootstrapped visual signal strength: [100 draws]
-       - Mean: 5.51 (p-value = 0.009901)
-       - Quantiles: 
-          ╔══════════════════════════════════════════╗
-          ║  25%   50%   75%   80%   90%   95%   99% ║
-          ║5.330 5.505 5.698 5.735 5.830 5.903 6.013 ║
-          ╚══════════════════════════════════════════╝
-    - Likelihood ratio: 0.05096 (boot) / 0 (null) = Extremely large 
-\end{verbatim}
 
 \section{Web interface: autovi.web}\label{sec-autovi-web}
 
