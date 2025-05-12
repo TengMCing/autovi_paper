@@ -301,7 +301,7 @@ The package takes regression models and a `Keras` model as primary inputs. Modul
 
 ## Extension to Other Model Classes
 
-The `autovi` R package can be extended to accommodate other classes of models beyond linear regression, such as generalized linear models (`glm`). This is achieved by substituting the relevant overridable modules, as illustrated in @fig-autovi-diag.
+The `autovi` R package can be extended to accommodate other classes of models beyond linear regression, such as generalized linear models (`glm`). This is achieved by substituting the relevant overridable modules, and if needed, supplying a different `Keras` model.
 
 We provide an example of defining a new checker class tailored for Poisson regression using the `glm` framework:
 
@@ -329,7 +329,7 @@ auto_pois_vi <- AUTO_POIS_VI$instantiate
 
 The resulting checker class can be employed analogously to the linear model case described in @sec-autovi-usage. For illustration, we fit a Poisson model in which the quadratic term of the predictor $x$ is intentionally omitted. This misspecification manifests as a pronounced U-shaped pattern in the lineup display, which is also successfully identified by the computer vision model, yielding a p-value substantially below the conventional threshold of 0.05.
 
-It is important to note, however, that the pre-trained computer vision model was developed specifically for diagnostic evaluation of linear regression. Its applicability to other model classes relies on the assumption that the null residual plots exhibit characteristics broadly consistent with those of well-behaved linear regression residuals, that is, residuals should be approximately randomly scattered around zero, display roughly constant variance across the range of fitted values, and exhibit no discernible structure or curvature. If these conditions are not met, or if model violations do not give rise to visually detectable patterns, the validity of the automated diagnostics may be compromised. For further discussion on extending the methodology to other model classes, refer to @li2024automated.
+It is important to note, however, that the pre-trained computer vision model included in `autovi`, such as `vss_phn_32` (see `list_keras_models()` for the full list of available models), was developed specifically for diagnostics of linear regression. Its applicability to other model classes relies on the assumption that the null residual plots exhibit characteristics broadly consistent with those of well-behaved linear regression residuals, that is, residuals should be approximately randomly scattered around zero, display roughly constant variance across the range of fitted values, and exhibit no discernible structure or curvature. If these conditions are not met, or if model violations do not give rise to visually detectable patterns, the validity of the automated diagnostics may be compromised. In such cases, users are encouraged to train and apply their own `Keras` models. Detailed guidance on model training and discussion on extending the methodology to other model classes can be found in @li2024automated.
 
 ```r
 x <- rnorm(300, sd = 0.5)
