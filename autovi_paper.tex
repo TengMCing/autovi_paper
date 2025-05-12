@@ -263,8 +263,8 @@ world, such tasks are well-suited for automation. We present a new R
 package that uses a computer vision model to automate the evaluation of
 residual plots. An accompanying Shiny app is provided for ease of use.
 Given a sample of residuals, the model predicts a visual signal strength
-(VSS) and offers supporting information to help analysts assess the
-adequacy of their model fit.
+(VSS) and offers supporting information to help analysts assess model
+fit.
 \end{abstract}
 
 \keywords{initial data analysis; statistical graphics; data
@@ -356,10 +356,10 @@ function of the data or the underlying data generating process.
 Consequently, the calculation of VSS can vary across different model
 classes or within the same model, depending on the generating function.
 
-VSS is an estimate of the distance between the residual distribution of
-a fitted classical normal linear regression model and a reference
-distribution; more details can be found in \citet{li2024automated}. The
-distance measure is based on the Kullback-Leibler (KL) divergence:
+VSS estimates the distance between the residual distribution of a fitted
+classical normal linear regression model and a reference distribution
+\citep[see][for details]{li2024automated}. The distance measure is based
+on the Kullback-Leibler (KL) divergence:
 
 \begin{equation*} \label{eq:kl-0}
 D = \log\left(1 + D_{KL}\right),
@@ -481,15 +481,14 @@ Test (RESET) \citep{ramsey1969tests} would also strongly detect the
 nonlinearity.
 
 The third example is generated using the \texttt{surreal} package
-\citep{surreal} where structured residuals are hidden in data, to be
-revealed if the correct model is specified. Here a quote based on Tukey
-is used as the residual structure ``visual summaries focus on unexpected
-values''. The automated plot reading predicts the VSS to be 5.87, with a
-\(p\)-value less than 0.05. This structure is blindingly obvious
-visually, but a RESET test for nonlinear structure would not report a
-problem. (It would be detected by a Breusch-Pagan for heteroscedasticity
-and also Shapiro-Wilk test \citep{shapiro1965analysis} for
-non-normality.)
+\citep{surreal}, where structure residuals are embedded in the data. In
+this case, a quote inspired by Tukey, ``visual summaries focus on
+unexpected values'', is used to define the residual structure. The
+automated plot reading predicts the VSS to be 5.87, with a \(p\)-value
+less than 0.05. Visually, the structure is strikingly clear, but a RESET
+test for nonlinear structure would not report a problem. (It would be
+detected by a Breusch-Pagan for heteroscedasticity and also Shapiro-Wilk
+test \citep{shapiro1965analysis} for non-normality.)
 
 \begin{figure}
 
@@ -944,13 +943,11 @@ server. These libraries are integrated into the Shiny application using
 the \texttt{reticulate} package, which provides an interface between R
 and Python.
 
-Due to the resource allocation policy of shinyapps.io, the server enters
-a sleep mode during periods of inactivity, resulting in the clearing of
-the local Python virtual environment. Consequently, when the application
-``wakes up'' for a new user session, these libraries need to be
-reinstalled. While this ensures a clean environment for each session, it
-may lead to slightly longer loading times for the first user after a
-period of inactivity.
+Due to shinyapps.io's resource policy, inactive servers enter sleep
+mode, clearing the local Python environment. When reactivated for a new
+session, libraries must be reinstalled. While this ensures a clean
+environment for each session, it may lead to slightly longer loading
+times for the first user after a period of inactivity.
 
 In contrast to \texttt{autovi}, \texttt{autovi.web} leverages
 \texttt{TensorFlow.js}, a JavaScript library that allows the execution
