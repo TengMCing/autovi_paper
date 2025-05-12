@@ -394,10 +394,19 @@ and \(\boldsymbol{X}\) is the design matrix of the regression model.
 
 The computer vision model approximates this mapping from a set of
 residuals to its corresponding distance measure. It is trained on a
-large number of synthetic regression models, where the data-generating
-process is known, allowing the distance measure to be explicitly
-calculated. The model takes a residual plot as input and outputs the
-corresponding distance measure. Additional details are provided in
+large number of synthetic regression models, each designed to simulate
+specific violations of classical linear regression assumptions. These
+models incorporate non-linearity through Hermite polynomial
+transformations of predictors, heteroskedasticity by making the error
+variance a predictor-dependent function, and non-normality by drawing
+residuals from distributions such as discrete, uniform, and lognormal.
+Both simple and multiple linear regression structures are used, with
+controlled parameters to generate diverse and complex residual patterns.
+Since the data-generating process is known, the distance measure \(D\)
+can be explicitly calculated, enabling supervised training. The computer
+vision model takes a residual plot as input and outputs the
+corresponding distance measure, learning to quantify model violations
+directly from visual patterns. Additional details are provided in
 \citet{li2024automated}.
 
 \section{Definition and simulation of null and bootstrapped
@@ -828,7 +837,7 @@ classes, refer to \citet{li2024automated}.
 \end{Shaded}
 
 \begin{center}
-\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/unnamed-chunk-9-1.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/unnamed-chunk-7-1.pdf}
 \end{center}
 
 \begin{Shaded}
