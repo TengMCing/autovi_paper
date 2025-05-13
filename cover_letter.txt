@@ -1,0 +1,17 @@
+12 May 2025
+Editor Tilman Davies
+Australian and New Zealand Journal of Statistics
+
+Dear Editor,
+
+We are pleased to submit our reveised manuscript, titled "Automated Residual Plot Assessment with the R Package autovi and the Shiny App autovi.web," for consideration by the Australian and New Zealand Journal of Statistics.
+
+We thank the reviewers and the editorial team for their constructive feedback. In this revision, we have carefully addressed all comments, clarified methodological aspects, and improved the overall presentation. A point-by-point response to the reviewers’ suggestions has been provided through the submission portal.
+
+Thank you for considering our revised manuscript. We look forward to your response and the opportunity to contribute to ANZJS.
+
+Sincerely,
+Weihao Li
+BDSI, The Australian National University
+patrick.li@anu.edu.au
+(on behalf of all co-authors)
