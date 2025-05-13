@@ -1,6 +1,6 @@
 ## Response to reviewers
 
-We thank the reviewers for their reviews. We have adressed it as follows. 
+We thank the reviewers for their reviews. We have addressed it as follows. 
 
 ### Referee 1
 
@@ -20,11 +20,11 @@ Thank you for the suggestion. We agree that this is a valuable direction for fut
 
 > 4. Finally, please check the English in the manuscript. Certain lengthy sentences can be hard to understand.
 
-We have revised the manuscript to improve clarity and gammar. Notable changes include:
+We have revised the manuscript to improve clarity and grammar. Notable changes include:
 
 - Section 2 
     - Original: "VSS is an estimate of the distance between the residual distribution of a fitted classical normal linear regression model and a reference distribution; more details can be found in Li et al. 2024b."
-    - Revised: "VSS estiates the distance between the residual distribution of a fitted classical normal linear regression model and a reference distribution (see Li et al. 2024b, for65details)."
+    - Revised: "VSS estimates the distance between the residual distribution of a fitted classical normal linear regression model and a reference distribution (see Li et al. 2024b, for65details)."
 
 - Section 5.1 
     - Original: "Due to the resource allocation policy of shinyapps.io, the server enters a sleep mode during periods of inactivity, resulting in the clearing of the local Python virtual environment. Consequently, when the application "wakes up" for a new user session, these libraries need to be reinstalled."
@@ -72,6 +72,6 @@ Thank you for the suggestion. We considered this structure but chose to prioriti
 
 The `bandicoot` system is a custom object-oriented system tailored for our development needs, in a similar spirit to how `ggproto` is used within `ggplot2`. A detailed comparison with newer systems like `S7` is beyond the scope of this paper.
 
-> - The word "be" in line 60 is redundunt in the sentence.
+> - The word "be" in line 60 is redundant in the sentence.
 
 Thank you. This has been corrected.

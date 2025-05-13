@@ -154,6 +154,7 @@ library(dplyr)
 library(ggplot2)
 library(patchwork)
 library(ggthemes)
+library(bandicoot)
 
 test_resid <- read_csv("residuals/test_resid.csv")
 p1 <- ggplot(test_resid, aes(x=.fitted, y=.resid)) +
