@@ -1,10 +1,7 @@
 % Options for packages loaded elsewhere
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL autovi_paper_submission1.tex   Wed May 14 13:06:49 2025
-%DIF ADD autovi_paper.tex               Wed May 14 13:03:54 2025
-%DIF 2a2
-% Options for packages loaded elsewhere %DIF >
-%DIF -------
+%DIF ADD autovi_paper.tex               Wed May 14 16:13:16 2025
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
@@ -12,32 +9,21 @@
 \documentclass[
 doublespace,
   times]{anzsauth}
-%DIF 9c10
-%DIF <
-%DIF -------
-\usepackage{xcolor} %DIF >
-%DIF -------
+
 \usepackage{amsmath,amssymb}
-%DIF 11a12
-\setcounter{secnumdepth}{5} %DIF >
-%DIF -------
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-%DIF 17c19
-%DIF <   \usepackage{unicode-math}
-%DIF -------
-  \usepackage{unicode-math} % this also loads fontspec %DIF >
-%DIF -------
+  \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
 \ifPDFTeX\else
-  % xetex/luatex font selection
+    % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -55,11 +41,9 @@ doublespace,
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-%DIF 41-43d43
-%DIF < \usepackage{xcolor}
-%DIF < \setlength{\emergencystretch}{3em} % prevent overfull lines
-%DIF < \setcounter{secnumdepth}{5}
-%DIF -------
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -125,12 +109,8 @@ doublespace,
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 
-%DIF 109-110c108
-%DIF < \providecommand{\tightlist}{%
-%DIF <   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
-%DIF -------
-\usepackage{longtable,booktabs,array} %DIF >
-%DIF -------
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -156,24 +136,6 @@ doublespace,
 \def\fps@figure{htbp}
 \makeatother
 
-%DIF 136a134-149
- %DIF >
- %DIF >
- %DIF >
- %DIF >
-\setlength{\emergencystretch}{3em} % prevent overfull lines %DIF >
- %DIF >
-\providecommand{\tightlist}{% %DIF >
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}} %DIF >
- %DIF >
- %DIF >
- %DIF >
-  %DIF >
-\usepackage[]{natbib} %DIF >
-\bibliographystyle{anzsj} %DIF >
- %DIF >
- %DIF >
-%DIF -------
 \usepackage{pmboxdraw}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
@@ -216,21 +178,13 @@ doublespace,
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-%DIF 178-180d192
-%DIF <
-%DIF < \usepackage[]{natbib}
-%DIF < \bibliographystyle{anzsj}
-%DIF -------
+
+\usepackage[]{natbib}
+\bibliographystyle{anzsj}
 \usepackage{bookmark}
-%DIF 182d193
-%DIF <
-%DIF -------
+
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-%DIF 184c194
-%DIF < \urlstyle{same} % disable monospaced font for URLs
-%DIF -------
-\urlstyle{same} %DIF >
-%DIF -------
+\urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={Automated Residual Plot Assessment with the R Package autovi and the Shiny App autovi.web},
   pdfauthor={Weihao Li; Dianne Cook; Emi Tanaka; Susan VanderPlas; Klaus Ackermann},
@@ -295,7 +249,7 @@ Statistics, Monash University, Wellington Road, VIC 3800, Australia\\
 National University, 46 Sullivan's Creek Road, ACT 2600, Australia\\
 \addressnum{3} Department of Statistics, University of Nebraska, Hardin
 Hall, 3310 Holdrege St Suite 340, Lincoln, NE 68583, United States\\
-%DIF 249c259
+%DIF 249c249
 %DIF < \hspace*{1ex} Email: \texttt{weihao.li@monash.edu}
 %DIF -------
 \hspace*{1ex} Email: \texttt{patrick.li@anu.edu.au}     %DIF >
@@ -479,12 +433,14 @@ computer vision model.
 
 The remainder of this paper is structured as follows:
 Section~\DIFaddbegin \DIFadd{\ref{sec-vss-desc} introduces the definition and computation of
-visual signal strength. Section~}\DIFaddend \ref{sec-autovi} provides a detailed
-documentation of the \texttt{autovi} package, including its usage and
-infrastructure. Section~\ref{sec-autovi-web} focuses on the
-\texttt{autovi.web} interface, describing its design and usage, along
-with illustrative examples. Finally, Section~\ref{sec-autovi-conclusion}
-presents the main conclusions of this work.
+visual signal strength. Section~\ref{sec-null-and-boot-desc} expands on
+the computation of the null and bootstrapped residuals.
+Section~}\DIFaddend \ref{sec-autovi} provides a detailed documentation of the
+\texttt{autovi} package, including its usage and infrastructure.
+Section~\ref{sec-autovi-web} focuses on the \texttt{autovi.web}
+interface, describing its design and usage, along with illustrative
+examples. Finally, Section~\ref{sec-autovi-conclusion} presents the main
+conclusions of this work.
 
 \section{Definition and computation of visual signal
 strength}\label{sec-vss-desc}
@@ -1450,7 +1406,7 @@ These \texttt{R} packages were used for the work: \texttt{tidyverse}
 \citep{reticulate}.
 
 
-\bibliography{bibliography.bib}
+  \bibliography{bibliography.bib}
 
 
 
