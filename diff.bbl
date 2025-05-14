@@ -1,0 +1,307 @@
+\begin{thebibliography}{45}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{Abadi {et~al.}(2016)Abadi, Agarwal, Barham, Brevdo, Chen, Citro,
+  Corrado, Davis, Dean, Devin \textrm{et~al.}}]{abadi2016tensorflow}
+\textsc{Abadi, M., Agarwal, A., Barham, P., Brevdo, E., Chen, Z., Citro, C.,
+  Corrado, G.S., Davis, A., Dean, J., Devin, M.} \textrm{et~al.} (2016).
+\newblock Tensorflow: Large-scale machine learning on heterogeneous distributed
+  systems.
+\newblock \textsl{arXiv preprint arXiv:1603.04467} .
+
+\bibitem[{Allaire {et~al.}(2024)Allaire, Teague, Scheidegger, Xie \&
+  Dervieux}]{Allaire_Quarto_2024}
+\textsc{Allaire, J., Teague, C., Scheidegger, C., Xie, Y. \& Dervieux, C.}
+  (2024).
+\newblock {Quarto}.
+\newblock \doi{10.5281/zenodo.5960048}.
+\newblock \urlprefix\url{https://github.com/quarto-dev/quarto-cli}.
+
+\bibitem[{Attali(2021)}]{shinyjs}
+\textsc{Attali, D.} (2021).
+\newblock \textsl{shinyjs: Easily Improve the User Experience of Your Shiny
+  Apps in Seconds}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=shinyjs}.
+\newblock R package version 2.1.0.
+
+\bibitem[{Balamuta(2024)}]{surreal}
+\textsc{Balamuta, J.J.} (2024).
+\newblock \textsl{surreal: Create Datasets with Hidden Images in Residual
+  Plots}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=surreal}.
+\newblock R package version 0.0.1.
+
+\bibitem[{Breusch \& Pagan(1979)}]{breusch1979simple}
+\textsc{Breusch, T.S. \& Pagan, A.R.} (1979).
+\newblock A simple test for heteroscedasticity and random coefficient
+  variation.
+\newblock \textsl{Econometrica: Journal of the Econometric Society} ,
+  1287--1294.
+
+\bibitem[{Buja {et~al.}(2009)Buja, Cook, Hofmann, Lawrence, Lee, Swayne \&
+  Wickham}]{buja2009statistical}
+\textsc{Buja, A., Cook, D., Hofmann, H., Lawrence, M., Lee, E.K., Swayne, D.F.
+  \& Wickham, H.} (2009).
+\newblock Statistical inference for exploratory data analysis and model
+  diagnostics.
+\newblock \textsl{Philosophical Transactions of the Royal Society A:
+  Mathematical, Physical and Engineering Sciences} \textbf{367}, 4361--4383.
+
+\bibitem[{Chang \& {Borges Ribeiro}(2021)}]{shinydashboard}
+\textsc{Chang, W. \& {Borges Ribeiro}, B.} (2021).
+\newblock \textsl{shinydashboard: Create Dashboards with 'Shiny'}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=shinydashboard}.
+\newblock R package version 0.7.2.
+
+\bibitem[{Chang {et~al.}(2022)Chang, Cheng, Allaire, Sievert, Schloerke, Xie,
+  Allen, McPherson, Dipert \& Borges}]{shiny}
+\textsc{Chang, W., Cheng, J., Allaire, J., Sievert, C., Schloerke, B., Xie, Y.,
+  Allen, J., McPherson, J., Dipert, A. \& Borges, B.} (2022).
+\newblock \textsl{shiny: Web Application Framework for R}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=shiny}.
+\newblock R package version 1.7.3.
+
+\bibitem[{Cheng {et~al.}(2024)Cheng, Sievert, Schloerke, Chang, Xie \&
+  Allen}]{htmltools}
+\textsc{Cheng, J., Sievert, C., Schloerke, B., Chang, W., Xie, Y. \& Allen, J.}
+  (2024).
+\newblock \textsl{htmltools: Tools for HTML}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=htmltools}.
+\newblock R package version 0.5.8.
+
+\bibitem[{Clark {et~al.}(2015)Clark \textrm{et~al.}}]{clark2015pillow}
+\textsc{Clark, A.} \textrm{et~al.} (2015).
+\newblock Pillow (pil fork) documentation.
+\newblock \textsl{readthedocs} .
+
+\bibitem[{Cook \& Weisberg(1982)}]{cook1982residuals}
+\textsc{Cook, R.D. \& Weisberg, S.} (1982).
+\newblock \textsl{Residuals and influence in regression}.
+\newblock New York: Chapman and Hall.
+
+\bibitem[{Davies, Locke \& {D'Agostino McGowan}(2022)}]{datasaurus}
+\textsc{Davies, R., Locke, S. \& {D'Agostino McGowan}, L.} (2022).
+\newblock \textsl{datasauRus: Datasets from the Datasaurus Dozen}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=datasauRus}.
+\newblock R package version 0.1.6.
+
+\bibitem[{Gautier(2024)}]{rpy2}
+\textsc{Gautier, L.} (2024).
+\newblock \textsl{Python interface to the R language (embedded R)}.
+\newblock \urlprefix\url{https://pypi.org/project/rpy2/}.
+\newblock Version 3.5.16.
+
+\bibitem[{Goode \& Rey(2019)}]{ggresidpanel}
+\textsc{Goode, K. \& Rey, K.} (2019).
+\newblock \textsl{ggResidpanel: Panels and Interactive Versions of Diagnostic
+  Plots using 'ggplot2'}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=ggResidpanel}.
+\newblock R package version 0.3.0.
+
+\bibitem[{Hartig(2022)}]{dharma}
+\textsc{Hartig, F.} (2022).
+\newblock \textsl{DHARMa: Residual Diagnostics for Hierarchical (Multi-Level /
+  Mixed) Regression Models}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=DHARMa}.
+\newblock R package version 0.4.6.
+
+\bibitem[{Hebbali(2024)}]{olsrr}
+\textsc{Hebbali, A.} (2024).
+\newblock \textsl{olsrr: Tools for Building OLS Regression Models}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=olsrr}.
+\newblock R package version 0.6.0.
+
+\bibitem[{Hester \& Bryan(2022)}]{glue}
+\textsc{Hester, J. \& Bryan, J.} (2022).
+\newblock \textsl{glue: Interpreted String Literals}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=glue}.
+\newblock R package version 1.6.2.
+
+\bibitem[{Johnson(2022)}]{rockchalk}
+\textsc{Johnson, P.E.} (2022).
+\newblock \textsl{rockchalk: Regression Estimation and Presentation}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=rockchalk}.
+\newblock R package version 1.8.157.
+
+\bibitem[{Kuhn, Vaughan \& Hvitfeldt(2024)}]{yardstick}
+\textsc{Kuhn, M., Vaughan, D. \& Hvitfeldt, E.} (2024).
+\newblock \textsl{yardstick: Tidy Characterizations of Model Performance}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=yardstick}.
+\newblock R package version 1.3.1.
+
+\bibitem[{Li(2024)}]{bandicoot}
+\textsc{Li, W.} (2024).
+\newblock bandicoot: Light-weight python-like object-oriented system.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=bandicoot}.
+
+\bibitem[{Li {et~al.}(2024{\natexlab{a}})Li, Cook, Tanaka \&
+  VanderPlas}]{li2024plot}
+\textsc{Li, W., Cook, D., Tanaka, E. \& VanderPlas, S.} (2024{\natexlab{a}}).
+\newblock A plot is worth a thousand tests: Assessing residual diagnostics with
+  the lineup protocol.
+\newblock \textsl{Journal of Computational and Graphical Statistics}
+  \textbf{33}, 1497--1511.
+\newblock \doi{10.1080/10618600.2024.2344612}.
+
+\bibitem[{Li {et~al.}(2024{\natexlab{b}})Li, Cook, Tanaka, VanderPlas \&
+  Ackermann}]{li2024automated}
+\textsc{Li, W., Cook, D., Tanaka, E., VanderPlas, S. \& Ackermann, K.}
+  (2024{\natexlab{b}}).
+\newblock Automated assessment of residual plots with computer vision models.
+\newblock \textsl{arXiv preprint arXiv:2411.01001} .
+
+\bibitem[{Long(2022)}]{jtools}
+\textsc{Long, J.A.} (2022).
+\newblock \textsl{jtools: Analysis and Presentation of Social Scientific Data}.
+\newblock \urlprefix\url{https://cran.r-project.org/package=jtools}.
+\newblock R package version 2.2.0.
+
+\bibitem[{Loy \& Hofmann(2014)}]{loy2014hlmdiag}
+\textsc{Loy, A. \& Hofmann, H.} (2014).
+\newblock Hlmdiag: A suite of diagnostics for hierarchical linear models in r.
+\newblock \textsl{Journal of Statistical Software} \textbf{56}, 1--28.
+
+\bibitem[{MacFarlane, Krewinkel \& Rosenthal(2024)}]{MacFarlane_Pandoc}
+\textsc{MacFarlane, J., Krewinkel, A. \& Rosenthal, J.} (2024).
+\newblock {Pandoc}.
+\newblock \urlprefix\url{https://github.com/jgm/pandoc}.
+
+\bibitem[{Mason {et~al.}(2022)Mason, Lee, Laa \& Cook}]{mason2022cassowaryr}
+\textsc{Mason, H., Lee, S., Laa, U. \& Cook, D.} (2022).
+\newblock \textsl{cassowaryr: Compute Scagnostics on Pairs of Numeric Variables
+  in a Data Set}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=cassowary}.
+\newblock R package version 2.0.0.
+
+\bibitem[{Moon(2020)}]{webr}
+\textsc{Moon, K.W.} (2020).
+\newblock \textsl{webr: Data and Functions for Web-Based Analysis}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=webr}.
+\newblock R package version 0.1.5.
+
+\bibitem[{Müller(2020)}]{here}
+\textsc{Müller, K.} (2020).
+\newblock \textsl{here: A simpler way to find your files}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=here}.
+\newblock R package version 1.0.1.
+
+\bibitem[{Nowosad(2018)}]{rcartocolor}
+\textsc{Nowosad, J.} (2018).
+\newblock \textsl{'CARTOColors' palettes}.
+\newblock \urlprefix\url{https://nowosad.github.io/rcartocolor}.
+\newblock R package version 1.0.
+
+\bibitem[{Ooms(2023)}]{magick}
+\textsc{Ooms, J.} (2023).
+\newblock \textsl{magick: Advanced Graphics and Image-Processing in R}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=magick}.
+\newblock R package version 2.7.4.
+
+\bibitem[{Pedersen(2022)}]{patchwork}
+\textsc{Pedersen, T.L.} (2022).
+\newblock \textsl{patchwork: The composer of plots}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=patchwork}.
+\newblock R package version 1.1.2.
+
+\bibitem[{{R Core Team}(2022)}]{stats}
+\textsc{{R Core Team}} (2022).
+\newblock \textsl{R: A Language and Environment for Statistical Computing}.
+\newblock R Foundation for Statistical Computing, Vienna, Austria.
+\newblock \urlprefix\url{https://www.R-project.org/}.
+
+\bibitem[{Ramsey(1969)}]{ramsey1969tests}
+\textsc{Ramsey, J.B.} (1969).
+\newblock Tests for specification errors in classical linear least-squares
+  regression analysis.
+\newblock \textsl{Journal of the Royal Statistical Society: Series B
+  (Methodological)} \textbf{31}, 350--371.
+
+\bibitem[{Reinhart(2024)}]{regressinator}
+\textsc{Reinhart, A.} (2024).
+\newblock \textsl{regressinator: Simulate and Diagnose (Generalized) Linear
+  Models}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=regressinator}.
+\newblock R package version 0.2.0.
+
+\bibitem[{Rowlingson \& Diggle(2023)}]{splancs}
+\textsc{Rowlingson, B. \& Diggle, P.} (2023).
+\newblock \textsl{splancs: Spatial and Space-Time Point Pattern Analysis}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=splancs}.
+\newblock R package version 2.01-44.
+
+\bibitem[{Sali \& Attali(2020)}]{shinycssloaders}
+\textsc{Sali, A. \& Attali, D.} (2020).
+\newblock \textsl{shinycssloaders: Add Loading Animations to a 'shiny' Output
+  While It's Recalculating}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=shinycssloaders}.
+\newblock R package version 1.0.0.
+
+\bibitem[{Shapiro \& Wilk(1965)}]{shapiro1965analysis}
+\textsc{Shapiro, S.S. \& Wilk, M.B.} (1965).
+\newblock An analysis of variance test for normality (complete samples).
+\newblock \textsl{Biometrika} \textbf{52}, 591--611.
+
+\bibitem[{Ushey, Allaire \& Tang(2024)}]{reticulate}
+\textsc{Ushey, K., Allaire, J. \& Tang, Y.} (2024).
+\newblock \textsl{reticulate: Interface to 'Python'}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=reticulate}.
+\newblock R package version 1.35.0.
+
+\bibitem[{Warton(2023)}]{warton_global_2023}
+\textsc{Warton, D.I.} (2023).
+\newblock Global simulation envelopes for diagnostic plots in regression
+  models.
+\newblock \textsl{The American Statistician} \textbf{77}, 425--431.
+
+\bibitem[{Wickham(2016)}]{ggplot2}
+\textsc{Wickham, H.} (2016).
+\newblock \textsl{ggplot2: Elegant graphics for data analysis}.
+\newblock Springer-Verlag New York.
+\newblock \urlprefix\url{https://ggplot2.tidyverse.org}.
+
+\bibitem[{Wickham {et~al.}(2019)Wickham, Averick, Bryan, Chang, McGowan,
+  François, Grolemund, Hayes, Henry, Hester, Kuhn, Pedersen, Miller, Bache,
+  Müller, Ooms, Robinson, Seidel, Spinu, Takahashi, Vaughan, Wilke, Woo \&
+  Yutani}]{tidyverse}
+\textsc{Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L.D.,
+  François, R., Grolemund, G., Hayes, A., Henry, L., Hester, J., Kuhn, M.,
+  Pedersen, T.L., Miller, E., Bache, S.M., Müller, K., Ooms, J., Robinson, D.,
+  Seidel, D.P., Spinu, V., Takahashi, K., Vaughan, D., Wilke, C., Woo, K. \&
+  Yutani, H.} (2019).
+\newblock Welcome to the {tidyverse}.
+\newblock \textsl{Journal of Open Source Software} \textbf{4}, 1686.
+\newblock \doi{10.21105/joss.01686}.
+
+\bibitem[{Wickham {et~al.}(2020)Wickham, Chowdhury, Cook \& Hofmann}]{nullabor}
+\textsc{Wickham, H., Chowdhury, N.R., Cook, D. \& Hofmann, H.} (2020).
+\newblock \textsl{nullabor: Tools for Graphical Inference}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=nullabor}.
+\newblock R package version 0.3.9.
+
+\bibitem[{Zakai(2011)}]{zakai2011emscripten}
+\textsc{Zakai, A.} (2011).
+\newblock Emscripten: an llvm-to-javascript compiler.
+\newblock In \textsl{Proceedings of the ACM international conference companion
+  on Object oriented programming systems languages and applications companion}.
+  pp. 301--312.
+
+\bibitem[{Zeileis \& Hothorn(2002)}]{lmtest}
+\textsc{Zeileis, A. \& Hothorn, T.} (2002).
+\newblock Diagnostic checking in regression relationships.
+\newblock \textsl{R News} \textbf{2}, 7--10.
+
+\bibitem[{Zhu(2021)}]{kableextra}
+\textsc{Zhu, H.} (2021).
+\newblock \textsl{kableExtra: Construct complex table with kable and pipe
+  syntax}.
+\newblock \urlprefix\url{https://CRAN.R-project.org/package=kableExtra}.
+\newblock R package version 1.3.4.
+
+\end{thebibliography}
