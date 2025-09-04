@@ -184,7 +184,7 @@ doublespace,
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
-  pdftitle={Automated residual plot assessment with the R package  and the Shiny app },
+  pdftitle={Automated residual plot assessment with the  package  and the  app },
   pdfauthor={Weihao Li; Dianne Cook; Emi Tanaka; Susan VanderPlas; Klaus Ackermann},
   pdfkeywords={initial data analysis, statistical graphics, data
 visualization, visual inference, computer vision, machine
@@ -223,8 +223,8 @@ Automated Residual Plot Assessment
 \firstletters{WEIHAO}LI, \firstletters{DIANNE}COOK, \firstletters{EMI}TANAKA, \firstletters{SUSAN}VANDERPLAS, AND  \firstletters{KLAUS}ACKERMANN
 }
 
-\title{Automated residual plot assessment with the R package
-\textsf{autovi} and the Shiny app \textsf{autovi.web}}
+\title{Automated residual plot assessment with the \textsf{R} package
+\textsf{autovi} and the \textsf{Shiny} app \textsf{autovi.web}}
 
 \author{
 Weihao Li\addressnum{1, 2},
@@ -324,10 +324,10 @@ of the fitted model and the reference distribution expected under
 correct model specification.
 
 To make the statistical testing procedure and trained computer vision
-model widely accessible, we developed the R package \textsf{autovi}
-along with a companion web interface, \textsf{autovi.web}, which allows
-users to automatically assess their residual plots using the trained
-computer vision model.
+model widely accessible, we developed the \textsf{R} package
+\textsf{autovi} along with a companion web interface,
+\textsf{autovi.web}, which allows users to automatically assess their
+residual plots using the trained computer vision model.
 
 The remainder of this paper is structured as follows:
 Section~\ref{sec-vss-desc} introduces the definition and computation of
@@ -349,12 +349,12 @@ which measures how prominently a specific set of visual patterns appears
 in an image. This can be computed for a training set of data, and plots,
 where the generating distributions are specified.
 
-In the context of regression model diagnostics, VSS describes the
-clarity of visual patterns on a diagnostic plot that may indicate model
-violations. Violations can be categorized as weak, moderate, or strong,
-but here we treat it as a continuous positive real variable.
-Importantly, its interpretation depends on how it is linked to a
-function of the data or the underlying data generating process.
+In the context of classical normal linear regression model diagnostics,
+VSS describes the clarity of visual patterns on a diagnostic plot that
+may indicate model violations. Violations can be categorized as weak,
+moderate, or strong, but here we treat it as a continuous positive real
+variable. Importantly, its interpretation depends on how it is linked to
+a function of the data or the underlying data generating process.
 Consequently, the calculation of VSS can vary across different model
 classes or within the same model, depending on the generating function.
 
@@ -370,16 +370,17 @@ D = \log\left(1 + D_{KL}\right),
 where \(D_{KL}\) is given by:
 
 \begin{equation} \label{eq:kl-1}
-D_{KL} = \int_{\mathbb{R}^{n}}\log\frac{p(\boldsymbol{e})}{q(\boldsymbol{e})}p(\boldsymbol{e})d\boldsymbol{e},
+D_{KL} = \int_{\mathbb{R}^{n}}\log\frac{p(\hat{\boldsymbol{e}})}{q(\hat{\boldsymbol{e}})}p(\hat{\boldsymbol{e}})d\hat{\boldsymbol{e}},
 \end{equation}
 
-here, \(p(.)\) and \(q(.)\) are the probability density functions of the
-reference residual distribution \(P\) and the true residual distribution
-\(Q\), respectively.
+here, \(\hat{\boldsymbol{e}}\) denotes the residual vector from the
+regression model, and \(p(\cdot)\) and \(q(\cdot)\) are the probability
+density functions of the reference residual distribution \(\mathrm{P}\)
+and the true residual distribution \(\mathrm{Q}\), respectively.
 
 This distance measure depends on knowledge of the true residual
 distribution, which is unknown in practice. To compute \(D_{KL}\) for
-the training samples, Equation \ref{eq:kl-1} takes different forms
+the training samples, Equation (\ref{eq:kl-1}) takes different forms
 depending on the specific model violations. For instance, where
 necessary higher-order predictors, \(\boldsymbol{Z}\), and their
 corresponding parameter, \(\boldsymbol{\beta}_Z\), are omitted from the
@@ -446,17 +447,19 @@ observed residual plot. By examining the proportion of bootstrapped
 plots that also exhibit significant violations, we can assess whether
 the original conclusion is robust to sampling variability.
 
-\section{R package: autovi}\label{sec-autovi}
+\section{\texorpdfstring{\textsf{R} package:
+autovi}{ package: autovi}}\label{sec-autovi}
 
 The main purpose of \texttt{autovi} is to provide rejection decisions
 and \(p\)-values for testing the null hypothesis (\(H_0\)) that the
 regression model is correctly specified. The package provides automated
 interpretation of residual plots using computer vision. The name
 \texttt{autovi} stands for \textbf{auto}mated \textbf{v}isual
-\textbf{i}nference. This functionality can be accessed through the R
-package \texttt{autovi}, or through a web interface,
+\textbf{i}nference. This functionality can be accessed through the
+\textsf{R} package \texttt{autovi}, or through a web interface,
 \texttt{autovi.web}, which enables users to perform analyses without
-installing R, Python, or their associated dependencies locally.
+installing \textsf{R}, \textsf{Python}, or their associated dependencies
+locally.
 
 \subsection{Motivation}\label{sec-why}
 
@@ -521,39 +524,40 @@ functions through method overriding.
 
 The \texttt{autovi} infrastructure effectively integrates multiple
 programming languages and libraries into a comprehensive analytical
-tool. It relies on five core libraries from Python and R, each playing a
-critical role in the analysis pipeline. In Python, \texttt{pillow}
-\citep{clark2015pillow} handles image processing tasks such as reading
-and resizing PNG files of residual plots, then converting them into
-input tensors for further analysis. \texttt{TensorFlow}
-\citep{abadi2016tensorflow}, a key component of modern machine learning,
-is used to predict the VSS of these plots using a pre-trained
-convolutional neural network.
+tool. It relies on five core libraries from \textsf{Python} and
+\textsf{R}, each playing a critical role in the analysis pipeline. In
+\textsf{Python}, \texttt{pillow} \citep{clark2015pillow} handles image
+processing tasks such as reading and resizing PNG files of residual
+plots, then converting them into input tensors for further analysis.
+\texttt{TensorFlow} \citep{abadi2016tensorflow}, a key component of
+modern machine learning, is used to predict the VSS of these plots using
+a pre-trained convolutional neural network.
 
-In the R environment, \texttt{autovi} utilizes several libraries.
-\texttt{ggplot2} \citep{ggplot2} generates the initial residual plots,
-saved as PNG files for visual input. \texttt{cassowaryr}
+In the \textsf{R} environment, \texttt{autovi} utilizes several
+libraries. \texttt{ggplot2} \citep{ggplot2} generates the initial
+residual plots, saved as PNG files for visual input. \texttt{cassowaryr}
 \citep{mason2022cassowaryr} computes scagnostics (scatter plot
 diagnostics), providing numerical features that capture statistical
 properties of the plots. These scagnostics complement the visual
 analysis by offering quantitative metrics as secondary input to the
 computer vision model. \texttt{reticulate} \citep{reticulate} enables
-seamless communication between R and Python.
+seamless communication between \textsf{R} and \textsf{Python}.
 
 \subsection{Installation}\label{installation}
 
 The \texttt{autovi} package is available on CRAN. It is actively
 developed and maintained, with the latest updates accessible on GitHub.
 This paper uses \texttt{autovi} version 0.4.2. The package includes
-internal functions to check the current Python environment used by the
-\texttt{reticulate} package. If the necessary Python packages are not
-installed in the Python interpreter, an error will be raised. If you
-want to select a specific Python environment, you can do so by calling
-the \texttt{reticulate::use\_python()} function before using the
+internal functions to check the current \textsf{Python} environment used
+by the \texttt{reticulate} package. If the necessary \textsf{Python}
+packages are not installed in the \textsf{Python} interpreter, an error
+will be raised. If you want to select a specific \textsf{Python}
+environment, you can do so by calling the
+\texttt{reticulate::use\_python()} function before using the
 \texttt{autovi} package.
 
-We recommend using the Shiny app \texttt{autovi.web} if users encounter
-installation problems.
+We recommend using the \textsf{Shiny} app \texttt{autovi.web} if users
+encounter installation problems.
 
 \subsection{Usage}\label{sec-autovi-usage}
 
@@ -714,11 +718,11 @@ the automated analysis.
 }
 
 \caption{\label{fig-autovi-diag}Diagram illustrating the infrastructure
-of the R package \texttt{autovi}. The modules in green are primary
-inputs provided by users. Modules in blue are overridable methods that
-can be modified to accommodate users' specific needs. The module in
-yellow is a pre-defined non-overridable method. The modules in red are
-primary outputs of the package.}
+of the extsf\{R\} package \texttt{autovi}. The modules in green are
+primary inputs provided by users. Modules in blue are overridable
+methods that can be modified to accommodate users' specific needs. The
+module in yellow is a pre-defined non-overridable method. The modules in
+red are primary outputs of the package.}
 
 \end{figure}%
 
@@ -763,11 +767,11 @@ described in detail in the package documentation.
 \subsection{Extension to Other Model
 Classes}\label{extension-to-other-model-classes}
 
-The \texttt{autovi} R package can be extended to accommodate other
-classes of models beyond linear regression, such as generalized linear
-models (\texttt{glm}). This is achieved by substituting the relevant
-overridable modules, and if needed, supplying a different \texttt{Keras}
-model.
+The \texttt{autovi} \textsf{R} package can be extended to accommodate
+other classes of models beyond linear regression, such as generalized
+linear models (\texttt{glm}). This is achieved by substituting the
+relevant overridable modules, and if needed, supplying a different
+\texttt{Keras} model.
 
 We provide an example of defining a new checker class tailored for
 Poisson regression using the \texttt{glm} framework:
@@ -897,28 +901,29 @@ the methodology to other model classes can be found in
 
 \section{Web interface: autovi.web}\label{sec-autovi-web}
 
-The \texttt{autovi.web} shiny application extends the functionality of
-\texttt{autovi} by offering a user-friendly web interface for automated
-residual plot assessment. This eliminates the common challenges
-associated with software installation, so users can avoid managing
-Python environments or handling version requirements for R libraries.
-The platform is cross-platform and accessible on various devices and
-operating systems, making it suitable even for users without R
-programming experience. Additionally, updates are managed centrally,
-ensuring that users always have access to the latest features. This
-section discusses the implementation based on \texttt{autovi.web}
-version 0.1.0.
+The \texttt{autovi.web} \textsf{Shiny} application extends the
+functionality of \texttt{autovi} by offering a user-friendly web
+interface for automated residual plot assessment. This eliminates the
+common challenges associated with software installation, so users can
+avoid managing \textsf{Python} environments or handling version
+requirements for \textsf{R} libraries. The platform is cross-platform
+and accessible on various devices and operating systems, making it
+suitable even for users without \textsf{R} programming experience.
+Additionally, updates are managed centrally, ensuring that users always
+have access to the latest features. This section discusses the
+implementation based on \texttt{autovi.web} version 0.1.0.
 
 \subsection{Implementation}\label{implementation}
 
 The interface \texttt{autovi.web} is built using the \texttt{shiny}
-\citep{shiny} and \texttt{shinydashboard} \citep{shinydashboard} R
-packages. Hosted on the \href{https://www.shinyapps.io}{shinyapps.io}
-domain, the application is accessible through any modern web browser.
-The R packages \texttt{htmltools} \citep{htmltools} and
-\texttt{shinycssloaders} \citep{shinycssloaders} are used to render
-markdown documentation in shiny application, and for loading animations
-for shiny widgets, respectively.
+\citep{shiny} and \texttt{shinydashboard} \citep{shinydashboard}
+\textsf{R} packages. Hosted on the
+\href{https://www.shinyapps.io}{shinyapps.io} domain, the application is
+accessible through any modern web browser. The \textsf{R} packages
+\texttt{htmltools} \citep{htmltools} and \texttt{shinycssloaders}
+\citep{shinycssloaders} are used to render markdown documentation in
+\textsf{Shiny} application, and for loading animations for
+\textsf{Shiny} widgets, respectively.
 
 Determining the best way to implement the backend was difficult. In our
 initial planning for \texttt{autovi.web}, we considered implementing the
@@ -931,32 +936,33 @@ possible that a working Emscripten \citep{zakai2011emscripten} version
 of this package may allow full \texttt{webr} support.
 
 We also explored the possibility of implementing the web interface using
-frameworks built on other languages, such as Python. However, server
-hosting domains that natively support Python servers typically do not
-have the latest version of R installed. Additionally, calling R from
-Python is typically done using the \texttt{rpy2} Python library
-\citep{rpy2}, but this approach can be awkward when dealing with
-language syntax related to non-standard evaluation. Another option we
-considered was renting a server where we could have full control, such
-as those provided by cloud platforms like Google Cloud Platform (GCP) or
-Amazon Web Services (AWS). However, deploying and maintaining the server
-securely requires some expertise. Ultimately, the most practical
-solution was to use the \texttt{shiny} and \texttt{shinydashboard}
-frameworks, which are well-established in the R community and offer a
-solid foundation for web application development.
+frameworks built on other languages, such as \textsf{Python}. However,
+server hosting domains that natively support \textsf{Python} servers
+typically do not have the latest version of \textsf{R} installed.
+Additionally, calling \textsf{R} from \textsf{Python} is typically done
+using the \texttt{rpy2} \textsf{Python} library \citep{rpy2}, but this
+approach can be awkward when dealing with language syntax related to
+non-standard evaluation. Another option we considered was renting a
+server where we could have full control, such as those provided by cloud
+platforms like Google Cloud Platform (GCP) or Amazon Web Services (AWS).
+However, deploying and maintaining the server securely requires some
+expertise. Ultimately, the most practical solution was to use the
+\texttt{shiny} and \texttt{shinydashboard} frameworks, which are
+well-established in the \textsf{R} community and offer a solid
+foundation for web application development.
 
 The server-side configuration of \texttt{autovi.web} is carefully
-designed to support its functionality. Most required Python libraries,
-including \texttt{pillow} and \texttt{numpy}, are pre-installed on the
-server. These libraries are integrated into the Shiny application using
-the \texttt{reticulate} package, which provides an interface between R
-and Python.
+designed to support its functionality. Most required \textsf{Python}
+libraries, including \texttt{pillow} and \texttt{numpy}, are
+pre-installed on the server. These libraries are integrated into the
+\textsf{Shiny} application using the \texttt{reticulate} package, which
+provides an interface between \textsf{R} and \textsf{Python}.
 
 Due to shinyapps.io's resource policy, inactive servers enter sleep
-mode, clearing the local Python environment. When reactivated for a new
-session, libraries must be reinstalled. While this ensures a clean
-environment for each session, it may lead to slightly longer loading
-times for the first user after a period of inactivity.
+mode, clearing the local \textsf{Python} environment. When reactivated
+for a new session, libraries must be reinstalled. While this ensures a
+clean environment for each session, it may lead to slightly longer
+loading times for the first user after a period of inactivity.
 
 In contrast to \texttt{autovi}, \texttt{autovi.web} leverages
 \texttt{TensorFlow.js}, a JavaScript library that allows the execution
@@ -971,24 +977,24 @@ While \texttt{autovi} requires downloading the pre-trained computer
 vision models from GitHub, these models in ``.keras'' file format are
 incompatible with \texttt{TensorFlow.js}. Therefore, we extract and
 store the model weights in JSON files and include them as extra
-resources in the Shiny application. When the application initializes,
-\texttt{TensorFlow.js} rebuilds the computer vision model using these
-pre-stored weights.
+resources in the \textsf{Shiny} application. When the application
+initializes, \texttt{TensorFlow.js} rebuilds the computer vision model
+using these pre-stored weights.
 
 To allow communication between \texttt{TensorFlow.js} and other
-components of the Shiny application, the \texttt{shinyjs} R package
-\citep{shinyjs} is used. This package allows calling custom JavaScript
-code within the Shiny framework. The specialized JavaScript code for
-initializing \texttt{TensorFlow.js} and calling \texttt{TensorFlow.js}
-for VSS prediction is deployed alongside the Shiny application as
-additional resources.
+components of the \textsf{Shiny} application, the \texttt{shinyjs}
+\textsf{R} package \citep{shinyjs} is used. This package allows calling
+custom JavaScript code within the \textsf{Shiny} framework. The
+specialized JavaScript code for initializing \texttt{TensorFlow.js} and
+calling \texttt{TensorFlow.js} for VSS prediction is deployed alongside
+the \textsf{Shiny} application as additional resources.
 
 \subsection{Usage}\label{sec-autovi-web-workflow}
 
 The workflow of \texttt{autovi.web} is designed to be straightforward,
 with numbered steps displayed in each panel. There are two example
 datasets provided by the web application. The single residual plot
-example uses the \texttt{dino} dataset from the R package
+example uses the \texttt{dino} dataset from the \textsf{R} package
 \texttt{datasauRus} \citep{datasaurus}. The lineup example uses
 residuals from a simulated regression model that has a non-linearity
 issue. We walk through the lineup example to further demonstrate the
@@ -1092,28 +1098,28 @@ intended visual features of the true residual plot.}
 
 \section{Conclusions}\label{sec-autovi-conclusion}
 
-This paper presents new regression diagnostics software, the R package
-\texttt{autovi} and its accompanying web interface, \texttt{autovi.web}.
-It addresses a critical gap in the current landscape of statistical
-software. While regression tools are widely available, effective and
-efficient diagnostic methods have lagged behind, particularly in the
-field of residual plot interpretation.
+This paper presents new regression diagnostics software, the \textsf{R}
+package \texttt{autovi} and its accompanying web interface,
+\texttt{autovi.web}. It addresses a critical gap in the current
+landscape of statistical software. While regression tools are widely
+available, effective and efficient diagnostic methods have lagged
+behind, particularly in the field of residual plot interpretation.
 
-The \texttt{autovi} R package, introduced in this paper, automates the
-assessment of residual plots by incorporating a computer vision model,
-reducing reliance on time-consuming and potentially inconsistent human
-interpretation. This automation improves the efficiency of the
-diagnostic process and promotes consistency in model evaluation across
-different users and studies.
+The \texttt{autovi} \textsf{R} package, introduced in this paper,
+automates the assessment of residual plots by incorporating a computer
+vision model, reducing reliance on time-consuming and potentially
+inconsistent human interpretation. This automation improves the
+efficiency of the diagnostic process and promotes consistency in model
+evaluation across different users and studies.
 
-The development of the accompanying Shiny app, \texttt{autovi.web},
-expands access to these advanced diagnostic tools, by providing a
-user-friendly interface. It makes automated residual plot assessment
-accessible to a broader audience, including those who may not have
-extensive programming experience. This web-based solution effectively
-addresses the potential barriers to adoption, such as complex
-dependencies and installation requirements, that are often associated
-with advanced statistical software.
+The development of the accompanying \textsf{Shiny} app,
+\texttt{autovi.web}, expands access to these advanced diagnostic tools,
+by providing a user-friendly interface. It makes automated residual plot
+assessment accessible to a broader audience, including those who may not
+have extensive programming experience. This web-based solution
+effectively addresses the potential barriers to adoption, such as
+complex dependencies and installation requirements, that are often
+associated with advanced statistical software.
 
 The combination of \texttt{autovi} and \texttt{autovi.web} offers a
 comprehensive solution to the challenges of residual plot interpretation
@@ -1134,7 +1140,7 @@ visual displays more broadly.
 \section{Resources and supplementary
 material}\label{resources-and-supplementary-material}
 
-The current version of \texttt{autovi} can be installed from CRAN, and
+The current version of \textsf{autovi} can be installed from CRAN, and
 source code for both packages are available at
 \href{https://github.com/TengMCing/autovi}{\texttt{github.com/TengMCing/autovi}}
 and
@@ -1147,12 +1153,12 @@ This paper is reproducibly written using Quarto
 and pdfTeX. The full source code to reproduce this paper is available at
 \href{https://github.com/TengMCing/autovi_paper}{\texttt{github.com/TengMCing/autovi\_paper}}.
 
-These \texttt{R} packages were used for the work: \texttt{tidyverse}
-\citep{tidyverse}, \texttt{lmtest} \citep{lmtest}, \texttt{kableExtra}
-\citep{kableextra}, \texttt{patchwork} \citep{patchwork},
-\texttt{rcartocolor} \citep{rcartocolor}, \texttt{glue} \citep{glue},
-\texttt{here} \citep{here}, \texttt{magick} \citep{magick},
-\texttt{yardstick} \citep{yardstick} and \texttt{reticulate}
+These \textsf{R} packages were used for the work: \textsf{tidyverse}
+\citep{tidyverse}, \textsf{lmtest} \citep{lmtest}, \textsf{kableExtra}
+\citep{kableextra}, \textsf{patchwork} \citep{patchwork},
+\textsf{rcartocolor} \citep{rcartocolor}, \textsf{glue} \citep{glue},
+\textsf{here} \citep{here}, \textsf{magick} \citep{magick},
+\textsf{yardstick} \citep{yardstick} and \textsf{reticulate}
 \citep{reticulate}.
 
 
