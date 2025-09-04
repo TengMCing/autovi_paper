@@ -119,17 +119,15 @@ doublespace,
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
@@ -176,6 +174,9 @@ doublespace,
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
 \usepackage[]{natbib}
 \bibliographystyle{anzsj}
 \usepackage{bookmark}
@@ -258,12 +259,12 @@ linear models, but it relies on manual evaluation, which does not scale
 well and can lead to inconsistent decisions across analysts. The lineup
 protocol, which embeds the observed plot among null plots, can reduce
 subjectivity but requires even more human effort. In today's data-driven
-world, such tasks are well-suited for automation. We present a new R
-package that uses a computer vision model to automate the evaluation of
-residual plots. An accompanying Shiny app is provided for ease of use.
-Given a sample of residuals, the model predicts a visual signal strength
-(VSS) and offers supporting information to help analysts assess model
-fit.
+world, such tasks are well-suited for automation. We present a new
+\textsf{R} package that uses a computer vision model to automate the
+evaluation of residual plots. An accompanying \textsf{Shiny} app is
+provided for ease of use. Given a sample of residuals, the model
+predicts a visual signal strength (VSS) and offers supporting
+information to help analysts assess model fit.
 \end{abstract}
 
 \keywords{initial data analysis; statistical graphics; data
@@ -279,18 +280,18 @@ learning; hypothesis testing; regression analysis; model diagnostics}
 Regression analysis is a widely used statistical modeling technique for
 data in many fields. There is a vast array of software for conducting
 regression modeling and generating diagnostics. The package
-\texttt{lmtest} \citep{lmtest} provides a suite of conventional tests,
-while the \texttt{stats} package \citep{stats} offers standard
+\textsf{lmtest} \citep{lmtest} provides a suite of conventional tests,
+while the \textsf{stats} package \citep{stats} offers standard
 diagnostic plots such as residuals vs.~fitted values, quantile-quantile
 (Q-Q) plots, and residuals vs.~leverage plots. Additional packages like
-\texttt{jtools} \citep{jtools}, \texttt{olsrr} \citep{olsrr},
-\texttt{rockchalk} \citep{rockchalk}, and \texttt{ggResidpanel}
+\textsf{jtools} \citep{jtools}, \textsf{olsrr} \citep{olsrr},
+\textsf{rockchalk} \citep{rockchalk}, and \textsf{ggResidpanel}
 \citep{ggresidpanel} deliver similar graphical diagnostics, often with
 enhanced aesthetics or interactive features. These tools collectively
 produce the core diagnostic plots outlined in the classical text by
-\citet{cook1982residuals}. The \texttt{ecostats} package
+\citet{cook1982residuals}. The \textsf{ecostats} package
 \citep{warton_global_2023} extends these diagnostics by incorporating
-simulation envelopes into residual plots. Meanwhile, \texttt{DHARMa}
+simulation envelopes into residual plots. Meanwhile, \textsf{DHARMa}
 \citep{dharma} compares empirical quantiles (0.25, 0.5, and 0.75) of
 scaled residuals to their theoretical counterparts, with a strong focus
 on identifying model violations such as heteroscedasticity, misspecified
@@ -304,9 +305,9 @@ violations. \citet{li2024plot} demonstrated that visual inference
 methods, particularly those using the lineup protocol
 \citep{buja2009statistical}, offer more practical and reliable
 assessments of residual patterns than conventional tests, as they are
-less sensitive to minor departures. Packages such as \texttt{nullabor}
-\citep{nullabor}, \texttt{HLMdiag} \citep{loy2014hlmdiag}, and
-\texttt{regressinator} \citep{regressinator} support this approach by
+less sensitive to minor departures. Packages such as \textsf{nullabor}
+\citep{nullabor}, \textsf{HLMdiag} \citep{loy2014hlmdiag}, and
+\textsf{regressinator} \citep{regressinator} support this approach by
 enabling users to compare observed residual plots with plots generated
 under null hypothesis, thereby helping to quantify the significance of
 any detected patterns.
@@ -323,8 +324,8 @@ of the fitted model and the reference distribution expected under
 correct model specification.
 
 To make the statistical testing procedure and trained computer vision
-model widely accessible, we developed the R package \texttt{autovi}
-along with a companion web interface, \texttt{autovi.web}, which allows
+model widely accessible, we developed the R package \textsf{autovi}
+along with a companion web interface, \textsf{autovi.web}, which allows
 users to automatically assess their residual plots using the trained
 computer vision model.
 
@@ -333,8 +334,8 @@ Section~\ref{sec-vss-desc} introduces the definition and computation of
 visual signal strength. Section~\ref{sec-null-and-boot-desc} expands on
 the computation of the null and bootstrapped residuals.
 Section~\ref{sec-autovi} provides a detailed documentation of the
-\texttt{autovi} package, including its usage and infrastructure.
-Section~\ref{sec-autovi-web} focuses on the \texttt{autovi.web}
+\textsf{autovi} package, including its usage and infrastructure.
+Section~\ref{sec-autovi-web} focuses on the \textsf{autovi.web}
 interface, describing its design and usage, along with illustrative
 examples. Finally, Section~\ref{sec-autovi-conclusion} presents the main
 conclusions of this work.
@@ -495,7 +496,7 @@ test \citep{shapiro1965analysis} for non-normality.)
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-three-examples-1.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-three-examples-1.pdf}
 
 }
 
@@ -640,7 +641,7 @@ is either rejected or not, and help identify potential remedies.
 
 \centering{
 
-\includegraphics[width=0.45\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
+\includegraphics[width=0.45\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-plot-pair-1.pdf}
 
 }
 
@@ -670,7 +671,7 @@ result through the \texttt{summary\_plot()} function.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-summary-plot-1.pdf}
 
 }
 
@@ -708,7 +709,7 @@ the automated analysis.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-diag-1.png}
 
 }
 
@@ -834,7 +835,7 @@ conventional threshold of 0.05.
 
 \centering{
 
-\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-pois-lineup-1.pdf}
+\includegraphics[width=0.8\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-pois-lineup-1.pdf}
 
 }
 
@@ -1021,7 +1022,7 @@ start the assessment.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-setup-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-setup-1.png}
 
 }
 
@@ -1060,7 +1061,7 @@ output to each pixel.
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-lineup-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-lineup-1.png}
 
 }
 
@@ -1076,7 +1077,7 @@ of residual plots allows for manual inspection (right image).}
 
 \centering{
 
-\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{autovi_paper_files/figure-pdf/fig-autovi-web-distributions-1.png}
+\includegraphics[width=1\textwidth,height=\textheight]{autovi_paper_files/figure-pdf/fig-autovi-web-distributions-1.png}
 
 }
 
