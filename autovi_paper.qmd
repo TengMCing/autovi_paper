@@ -1,5 +1,5 @@
 ---
-title: "Automated Residual Plot Assessment with the R Package autovi and the Shiny App autovi.web"
+title: Automated residual plot assessment with the R package \textsf{autovi} and the Shiny app \textsf{autovi.web}
 format:
   quarto-anzjs-pdf:
     keep-tex: true  
