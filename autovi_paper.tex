@@ -187,7 +187,7 @@ doublespace,
   pdftitle={Automated residual plot assessment with the  package  and the  application },
   pdfauthor={Weihao Li; Dianne Cook; Emi Tanaka; Susan VanderPlas; Klaus Ackermann},
   pdfkeywords={initial data analysis, statistical graphics, data
-visualization, visual inference, computer vision, machine
+visualisation, visual inference, computer vision, machine
 learning, hypothesis testing, regression analysis, model diagnostics},
   colorlinks=true,
   linkcolor={blue},
@@ -268,7 +268,7 @@ information to help analysts assess model fit.
 \end{abstract}
 
 \keywords{initial data analysis; statistical graphics; data
-visualization; visual inference; computer vision; machine
+visualisation; visual inference; computer vision; machine
 learning; hypothesis testing; regression analysis; model diagnostics}
           
 
@@ -277,9 +277,9 @@ learning; hypothesis testing; regression analysis; model diagnostics}
 
 \section{Introduction}\label{sec-autovi-introduction}
 
-Regression analysis is a widely used statistical modeling technique for
+Regression analysis is a widely used statistical modelling technique for
 data in many fields. There is a vast array of software for conducting
-regression modeling and generating diagnostics. The package
+regression modelling and generating diagnostics. The package
 \textsf{lmtest} \citep{lmtest} provides a suite of conventional tests,
 while the \textsf{stats} package \citep{stats} offers standard
 diagnostic plots such as residuals vs.~fitted values, quantile-quantile
@@ -295,7 +295,7 @@ simulation envelopes into residual plots. Meanwhile, \textsf{DHARMa}
 \citep{dharma} compares empirical quantiles (0.25, 0.5, and 0.75) of
 scaled residuals to their theoretical counterparts, with a strong focus
 on identifying model violations such as heteroscedasticity, misspecified
-functional forms, and issues specific to generalized linear and
+functional forms, and issues specific to generalised linear and
 mixed-effect models, like over/under-dispersion. It also provides
 conventional test annotations to reduce the risk of misinterpretation.
 
@@ -351,7 +351,7 @@ where the generating distributions are specified.
 
 In the context of classical normal linear regression model diagnostics,
 VSS describes the clarity of visual patterns on a diagnostic plot that
-may indicate model violations. Violations can be categorized as weak,
+may indicate model violations. Violations can be categorised as weak,
 moderate, or strong, but here we treat it as a continuous positive real
 variable. Importantly, its interpretation depends on how it is linked to
 a function of the data or the underlying data generating process.
@@ -400,7 +400,7 @@ residuals to its corresponding distance measure. It is trained on a
 large number of synthetic regression models, each designed to simulate
 specific violations of classical linear regression assumptions. These
 models incorporate non-linearity through Hermite polynomial
-transformations of predictors, heteroskedasticity by making the error
+transformations of predictors, heteroscedasticity by making the error
 variance a predictor-dependent function, and non-normality by drawing
 residuals from distributions such as discrete, uniform, and lognormal.
 Both simple and multiple linear regression structures are used, with
@@ -504,7 +504,7 @@ Shapiro--Wilk test \citep{shapiro1965analysis} for non-normality.)
 }
 
 \caption{\label{fig-three-examples}Reading residual plots can be a
-difficult task, particularly for students new to statistical modeling.
+difficult task, particularly for students new to statistical modelling.
 The \textsf{autovi} package makes it easier. Here are three examples of
 residual plots, which may appear to have structure. According to autovi,
 the visual signal strengths (VSS) of these three examples are
@@ -662,7 +662,7 @@ in the true residual plot that are absent in the null plot. Running
 these functions multiple times can help any visual suspicions, as each
 execution generates new random null plots for comparison.
 
-The package offers a straightforward visualization of the assessment
+The package offers a straightforward visualisation of the assessment
 result through the \texttt{summary\_plot()} function.
 
 \begin{Shaded}
@@ -728,7 +728,7 @@ red are primary outputs of the package.}
 
 The initial motivation for developing \textsf{autovi} was to create a
 convenient interface for sharing the models described and trained in
-\citet{li2024automated}. However, recognizing that the classical normal
+\citet{li2024automated}. However, recognising that the classical normal
 linear regression model represents a restricted class of models, we
 sought to avoid limiting the potential for future extensions, whether by
 the original developers or other developers. As a result, the package
@@ -743,7 +743,7 @@ extraction, bootstrapping and model refitting, fitted values and
 residuals extraction, auxiliary computation, null residual simulation,
 plotting, plot saving, image reading and resizing, VSS prediction, and
 \(p\)-value computation. Each module is designed with minimal dependency
-on the preceding modules, allowing users to customize parts of the
+on the preceding modules, allowing users to customise parts of the
 infrastructure without affecting its overall integrity. An overview of
 this infrastructure is illustrated in Figure~\ref{fig-autovi-diag}.
 
@@ -768,7 +768,7 @@ described in detail in the package documentation.
 classes}\label{extension-to-other-model-classes}
 
 The \textsf{autovi} \textsf{R} package can be extended to accommodate
-other classes of models beyond linear regression, such as generalized
+other classes of models beyond linear regression, such as generalised
 linear models (\texttt{glm}). This is achieved by substituting the
 relevant overridable modules, and if needed, supplying a different
 \textsf{Keras} model.
@@ -844,7 +844,7 @@ conventional threshold of 0.05.
 }
 
 \caption{\label{fig-pois-lineup}A lineup of residual plots from Poisson
-generalized linear models, with the true residual plot at position 4,
+generalised linear models, with the true residual plot at position 4,
 which displays a distinct U-shaped pattern. In contrast, the null plots
 show characteristics broadly consistent with well-behaved residuals from
 linear regression models.}
@@ -981,14 +981,14 @@ vision models from GitHub, these models in `.keras' file format are
 incompatible with \textsf{TensorFlow.js}. Therefore, we extract and
 store the model weights in JSON files and include them as extra
 resources in the \textsf{Shiny} application. When the application
-initializes, \textsf{TensorFlow.js} rebuilds the computer vision model
+initialises, \textsf{TensorFlow.js} rebuilds the computer vision model
 using these pre-stored weights.
 
 To allow communication between \textsf{TensorFlow.js} and other
 components of the \textsf{Shiny} application, the \textsf{shinyjs}
 \textsf{R} package \citep{shinyjs} is used. This package allows calling
 custom \textsf{JavaScript} code within the \textsf{Shiny} framework. The
-specialized \textsf{JavaScript} code for initializing
+specialised \textsf{JavaScript} code for initialising
 \textsf{TensorFlow.js} and calling \textsf{TensorFlow.js} for VSS
 prediction is deployed alongside the \textsf{Shiny} application as
 additional resources.
@@ -1138,7 +1138,7 @@ The framework established by \textsf{autovi} and \textsf{autovi.web}
 opens up exciting possibilities for further research and development.
 Future work could explore the extension of these automated assessment
 techniques to other types of diagnostic plots and statistical models,
-potentially revolutionizing how we approach statistical inference using
+potentially revolutionising how we approach statistical inference using
 visual displays more broadly.
 
 \section{Resources and supplementary
