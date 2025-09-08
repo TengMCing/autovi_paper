@@ -4,7 +4,7 @@ format:
   quarto-anzjs-pdf:
     keep-md: true
     keep-tex: true  
-    shorttitle: "Automated Residual Plot Assessment"
+    shorttitle: "Automated residual plot assessment"
     double-space: true
     line-numbers: true
     # You can specify extra preamble in the file below.
@@ -21,8 +21,8 @@ author:
         department: Department of Econometrics and Business Statistics
         address: Wellington Road, VIC 3800, Australia
       - name: The Australian National University
-        department: Biological Data Science Institute
-        address: 46 Sullivan's Creek Road, ACT 2600, Australia
+        department: Research School of Finance, Actuarial Studies and Statistics
+        address: CBE Building 26C, Kingsley Street, ACT 2600, Australia
     orcid: 0000-0003-4959-106X
   - name: Dianne Cook
     email: dicook@monash.edu 
@@ -35,8 +35,8 @@ author:
     email: emi.tanaka@anu.edu.au
     affiliations: 
       - name: The Australian National University
-        department: Biological Data Science Institute
-        address: 46 Sullivan's Creek Road, ACT 2600, Australia
+        department: Research School of Finance, Actuarial Studies and Statistics
+        address: CBE Building 26C, Kingsley Street, ACT 2600, Australia
     orcid: 0000-0002-1455-259X
   - name: Susan VanderPlas
     email: emi.tanaka@anu.edu.au
